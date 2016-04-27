@@ -10,5 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.13.4"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.12.5"
   }
 }
