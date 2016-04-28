@@ -7,39 +7,57 @@
     <title>Playlist Explorer</title>
 
 <!-- CSS -->
-    <link rel="stylesheet" href="styles/main.css">
     <!--bootstrap-->
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles/main.css">
+
 <!-- end CSS -->
 
 </head>
 <body>
-
-    Hello World
-
-
-
-
-
-
-
-
-
-
-
     <!-- JS -->
-        <script src="scripts/main.js"></script>
         <!--libraries-->
         <script src="/bower_components/jquery/dist/jquery.js"></script>
         <script src="/bower_components/spotify-web-api-js/src/spotify-web-api.js"></script>
         <script src="/bower_components/oauth-js/dist/oauth.min.js"></script>
         <script src="/bower_components/three.js/three.min.js"></script>
         <script src="/bower_components/Chart.js/dist/Chart.min.js"></script>
-    <!-- end JS -->
+        <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="scripts/main.js"></script>
 
+    <!-- end JS -->
+    <div class="hero-unit" id="login-container">
+      <h1>Playlist Explorer</h1>
+    </div>
+
+    <div id="song-features">
+      <h1>Current Song</h1>
+      <h3 id="track"></h3><button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">preview</button>
+      <h4><span id="artist"></span> on <span id="album"></span></h4>
+      <ul>
+        <li><label>Tempo: </label><span id="tempo"></span><button onclick="increaseTrait(0)">+</button><button onclick="resetTrait(0)">0</button><button onclick="decreaseTrait(0)">-</button></li>
+        <li><label>Acousticness: </label><span id="acousticness"></span><button onclick="increaseTrait(1)">+</button><button onclick="resetTrait(1)">0</button><button onclick="decreaseTrait(1)">-</button></li>
+        <li><label>Danceability: </label><span id="danceability"></span><button onclick="increaseTrait(2)">+</button><button onclick="resetTrait(2)">0</button><button onclick="decreaseTrait(2)">-</button></li>
+        <li><label>Energy: </label><span id="energy"></span><button onclick="increaseTrait(3)">+</button><button onclick="resetTrait(3)">0</button><button onclick="decreaseTrait(3)">-</button></li>
+        <li><label>Happiness: </label><span id="happiness"></span><button onclick="increaseTrait(4)">+</button><button onclick="resetTrait(4)">0</button><button onclick="decreaseTrait(4)">-</button></li>
+      </ul>
+      <button class="btn login-btn" id="song-generation-btn">GET MORE SONGS!</button>
+    </div>
+
+    <!-- modal for current song preview--> 
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <iframe id="current-song-iframe"></iframe>
+        </div>
+      </div>
+    </div>
+
+    <div id="chart-container" style="width: 400px; height:400px;">
+      <canvas id="myChart" width="400" height="400"></canvas>
+    </div>
+
+    <div id="song-suggestions">
+    </div>
 </body>
 </html>
-
-
-
-Hello World
