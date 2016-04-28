@@ -1,0 +1,148 @@
+body {
+  background: #fafafa;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: #333;
+  padding: 0;
+  margin: 0;
+}
+
+.hero-unit {
+  margin: 50px auto 50px auto;
+  width: 600px;
+  font-size: 18px;
+  font-weight: 200;
+  line-height: 30px;
+  background-color: #eee;
+  text-align: center;
+  border-radius: 6px;
+  padding: 60px;
+}
+.hero-unit h1 {
+  font-size: 60px;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+.hero-unit .login-button {
+  margin-top: 30px;
+  background-color: #2ebd59;
+  color: #fff;
+  font-size: 20px;
+  border-radius: 400px;
+  padding: 15px 50px 15px;
+  margin-bottom: 0;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  font-family: Circular, Helvetica, Arial, sans-serif;
+}
+.hero-unit .btn:hover {
+  background-color: #1ED760;
+}
+
+.browserupgrade {
+  margin: 0.2em 0;
+  background: #ccc;
+  color: #000;
+  padding: 0.2em 0;
+}
+
+#song-features, #chart-container {
+  display: none;
+  vertical-align: top;
+  width: calc(60% - 100px);
+  padding: 20px;
+}
+
+.increased {
+  color: #2ecc71;
+  font-weight: 700;
+}
+
+.decreased {
+  color: #e74c3c;
+  font-weight: 700;
+}
+
+#i-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+}
+
+.suggestion-group {
+  width: calc(100vw-10px);
+  padding: 50px 250px;
+  text-align: center;
+}
+.suggestion-group div {
+  display: inline-block;
+  width: 250px;
+  padding: 25px;
+  vertical-align: bottom;
+  text-align: center;
+}
+.suggestion-group button {
+  background-color: #2ebd59;
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  border-radius: 400px;
+  padding: 5px 20px 5px;
+  text-align: center;
+  margin-bottom: 5px;
+  vertical-align: middle;
+  cursor: pointer;
+  font-family: Circular, Helvetica, Arial, sans-serif;
+}
+.suggestion-group button:hover {
+  background-color: #1ED760;
+}
+
+.suggestion-group:nth-child(odd) {
+  background-color: #ecf0f1;
+}
+
+.login-btn {
+  margin-top: 30px;
+  background-color: #2ebd59;
+  color: #fff;
+  font-size: 20px;
+  border-radius: 400px;
+  padding: 15px 50px 15px;
+  margin-bottom: 0;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  font-family: Circular, Helvetica, Arial, sans-serif;
+}
+
+.login-btn:hover {
+  background-color: #1ED760;
+}
+
+#track {
+  display: inline-block;
+  margin-right: 20px;
+  margin-bottom: 0;
+  margin-top: 10px;
+}
+
+#song-features ul label {
+  width: 100px;
+}
+#song-features ul span {
+  display: inline-block;
+  width: 25px;
+  max-width: 25px;
+  overflow: hidden;
+  margin-right: 20px;
+}
+#song-features ul button {
+  margin: 0 10px;
+}
+
+.explored {
+  background-color: #34495e;
+  border-radius: 12px;
+  color: white;
+}
