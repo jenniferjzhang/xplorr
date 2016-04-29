@@ -10,46 +10,55 @@ var FORWARD = 38; // up arrow key code
 var BACKWARD = 40; // down arrow key code
 var LEFT = 37;
 var RIGHT = 39;
+camera.position.z = 5;
 
-addCube((1,2,3),'left');
-
-render();
-
-function addCube(pos, side) {
-    var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-    var color =  0xffffff;
-        // '0x' + (function co(lor){   return (lor +=
-        //     [0,1,2,3,4,5,6,7,8,9,'a','b','c','d','e','f'][Math.floor(Math.random()*16)])
-        // && (lor.length == 6) ?  lor : co(lor); })('');
-    var material = new THREE.MeshBasicMaterial( { color: color} );
+function addCube(x, y, z, side) {
+    var geometry = new THREE.BoxGeometry( 2, 5, 2 );
+    var material = new THREE.MeshBasicMaterial( { color: Math.random() * 0xffffff} );
     var cube = new THREE.Mesh( geometry, material );
-    cube.position.set(pos[0],pos[1],pos[2]);
-    if (side === 'left') {
-        cube.rotation.x +=1;
-        cube.rotation.y +=1;
-    } else if (side === 'right') {
-        cube.rotation.x +=1;
-        cube.rotation.y +=1;
-    }
+    // if (side === 'left') {
+    //     cube.rotation.x +=1;
+    //     cube.rotation.y +=1;
+    // } else if (side === 'right') {
+    //     cube.rotation.x +=1;
+    //     cube.rotation.y +=1;
+    // }
     scene.add( cube );
+    cube.position.x = x;
+    cube.position.y = y;
+    cube.position.z = z;
+
 };
 
 
 var initScene = function () {
     //left side of hallway
-    for (i = 0; i > -20; i--) {
-        var pos = (1,2,i);
-        addCube(pos, 'left');
+    for (i = 0; i > -100; i -= 2) {
+        addCube(5, 0, i, 'right');
     }
-    // addCube()
+    for (i = 0; i > -100; i-= 2) {
+        addCube(-5, 0, i, 'left');
+    }
 };
 
 
 initScene();
+// addCube(1, 2, 0,'left');
+// var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+// var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+// var cube = new THREE.Mesh( geometry, material );
+// scene.add( cube );
+// cube.position.x = 1;
+// cube.position.y = 2;
+// cube.position.z = 3;
+// console.log(cube);
+
+render();
 
 $(document).keydown(function(e) {
     switch(e.which) {
         case FORWARD: // up arrow
+            console.log ("MOVE FORWARD");
             moveForward();
             break;
 
@@ -67,6 +76,14 @@ $(document).keydown(function(e) {
 var moveForward = function() {
     // add more cubes in the future
     // move camera forward
+    addCube(5, 0, -102, 'right')
+    addCube(-5, 0, -102, 'left')
+
+    var curr_camera_z = camera.position.z;
+
+    camera.position.z = curr_camera_z - 2;
+
+
 };
 
 var moveBackward = function () {
@@ -74,7 +91,6 @@ var moveBackward = function () {
 };
 
 // cube.position.set(1,2,1);
-camera.position.z = 3;
 
 function render() {
     // requestAnimationFrame( render );
