@@ -46,6 +46,39 @@ body {
   padding: 0.2em 0;
 }
 
+
+/*Quiz*/
+
+.question-container {
+  text-align: center;
+  color: white;
+}
+
+.question-container h2 {
+  font-family: Circular, Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 50px;
+}
+
+.question-container .quiz-answer {
+  font-size: 15pt;
+  padding: calc((100vh - 273px)/10) 0;
+}
+
+.question-container .quiz-answer:hover {
+  cursor: pointer;
+  color: #95a5a6;
+}
+
+#to-artist-seed, #to-genre-seed, button.artist-quiz-answer {
+  background-color: #2980b9;
+  margin-top: 20px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/*Exploration*/
 #song-features, #chart-container {
   display: none;
   vertical-align: top;

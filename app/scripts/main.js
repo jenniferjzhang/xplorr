@@ -11,6 +11,7 @@ var quizProgress = -1;
 var quizQuestions = [];
 var quizResults = {limit: 5};
 var QUESTION_CONTAINER = 'question-container';
+var QUIZ_COLORS = ['#1abc9c', '#c0392b', '#2ecc71', '#9b59b6', '#34495e'];
 
 // The quiz doesn't do anything right now
 // TODO[tricia]: actually implement the quiz.
@@ -28,9 +29,11 @@ var makeQuizHtml = function(questionText, questionList, questionClass, id, extra
   extra = extra || '';
   var text = '<div class="'+QUESTION_CONTAINER+'" id="'+id+'">';
   text +='<h2 class="question-text">'+questionText+'</h2>';
+  text += '<div class="main">';
   for (var i=0; i<questionList.length; i++) {
     text += '<div class="'+questionClass+' quiz-answer" data-value='+questionList[i].val+'>'+questionList[i].text+'</div>'
   }
+  text += '</div>';
   text += extra;
   text += '</div>'; //end question-container
   return text;
@@ -41,10 +44,13 @@ var makeQuizInput = function(questionText, inputLabel, numLabels, questionClass,
   extra = extra || '';  
   var text = '<div class="'+QUESTION_CONTAINER+'" id="'+id+'">';
   text +='<h2 class="question-text">'+questionText+'</h2>';
+  text += '<div class="main">';
+
   for (var i=0; i<numLabels; i++) {
     text += '<input type="text" class="'+questionClass+' quiz-answer" placeholder="'+inputLabel+'"></input>';
   }
   text += '<button class="btn '+questionClass+'">Next</button>';
+  text += '</div>';
   text += extra;
   text += '</div>'; //end question-container
   return text;
@@ -53,7 +59,7 @@ var makeQuizInput = function(questionText, inputLabel, numLabels, questionClass,
 var nextQuizQuestion = function() {
   quizProgress += 1;
   if (quizProgress > 0) {
-    $('.'+QUESTION_CONTAINER).hide();
+    $('.'+QUESTION_CONTAINER).remove();
   }
 
   if (quizProgress < quizQuestions.length) {
@@ -64,21 +70,17 @@ var nextQuizQuestion = function() {
   }
 }
 
-var finishQuiz = function() {
-/*  $('body').append('<button id="finish-quiz">Quiz goes here. Skip for now</button>');
+var setColors = function() {
+  var color = QUIZ_COLORS[quizProgress % QUIZ_COLORS.length];
+  $('.'+QUESTION_CONTAINER + ' h2').css('backgroundColor', color);
+  $('.'+QUESTION_CONTAINER + ' .main div').css('backgroundColor', color);
+  $elements = $('.'+QUESTION_CONTAINER + ' .main div');
+  for (var i = 0; i < $elements.length; i++) {
+    $($elements[i]).css('opacity', 0.15*(($elements.length-i)%6)+0.2);
+  }
+}
 
-  $('#finish-quiz').on('click', function(e){
-      e.preventDefault();
-      // hardcoded to be ke$ha, 3OH!3, avril lavigne, etc.
-      songList = [{id: 'spotify:track:4AboqNl74jNDpJhPfqYDmj'}, 
-            {id: 'spotify:track:00Mb3DuaIH1kjrwOku9CGU'}, 
-            {id: 'spotify:track:6ol4ZSifr7r3Lb2a9L5ZAB'}, 
-            {id: 'spotify:track:1hBM2D1ULT3aeKuddSwPsK'},
-            {id: 'spotify:track:717TY4sfgKQm4kFbYQIzgo'}
-            ];
-      setUpExploration();
-  });  */
-  console.log(quizResults);
+var finishQuiz = function() {
   spotifyApi.getRecommendations(quizResults, processQuiz);
 }
 
@@ -106,6 +108,8 @@ var quizValence = function() {
     quizResults.target_valence = $(e.target).attr('data-value');
     nextQuizQuestion();
   });
+
+  setColors();
 }
 
 var quizDanceability = function() {
@@ -124,6 +128,8 @@ var quizDanceability = function() {
     quizResults.target_danceability = $(e.target).attr('data-value');
     nextQuizQuestion();
   });
+
+  setColors();
 }
 
 var quizAcousticness = function() {
@@ -142,6 +148,8 @@ var quizAcousticness = function() {
     quizResults.target_acousticness = $(e.target).attr('data-value');
     nextQuizQuestion();
   });
+
+  setColors();
 }
 
 var quizSeeds = function() {
@@ -202,6 +210,10 @@ var finishSeeds = function(err, data) {
   });
 
   $('#artist-seed').hide();
+  setColors();
+
+  $('.' + QUESTION_CONTAINER + ' .main').css('max-height', 'calc(100vh - 200px)');  
+  $('.' + QUESTION_CONTAINER + ' .main').css('overflow-y', 'auto');
 }
 
 quizQuestions.push(quizValence);
