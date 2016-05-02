@@ -82,6 +82,8 @@ var setColors = function() {
 
 var finishQuiz = function() {
   spotifyApi.getRecommendations(quizResults, processQuiz);
+  initializeGraphics();
+
 }
 
 var processQuiz = function(err, data) {
@@ -494,9 +496,6 @@ var initializeGraphics = function() {
 }
 
 $(document).on('ready', function(){
-  console.log("hello");
-
-  initializeGraphics();
 
   $('#login-container').append('<button id="login-btn" class="btn login-button">LOGIN WITH SPOTIFY</button>');
 

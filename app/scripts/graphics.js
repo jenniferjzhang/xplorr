@@ -6,7 +6,6 @@ var renderer = new THREE.WebGLRenderer({antialias:true});
 var loader = new THREE.TextureLoader;
 loader.crossOrigin = '';
 renderer.setSize( WIDTH, HEIGHT );
-document.body.appendChild( renderer.domElement );
 var future_z = -100
 var BLOCK_LENGTH = 2
 
