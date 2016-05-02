@@ -14,6 +14,8 @@ var BACKWARD = 40; // down arrow key code
 var LEFT = 37;
 var RIGHT = 39;
 
+var songs = {}
+
 camera.position.z = 5;
 
 function addCube(x, y, z, side) {
@@ -29,8 +31,7 @@ function addCube(x, y, z, side) {
 
 };
 
-function addSongGraphic(album_art_url, i) {
-    console.log(i);
+function addSongGraphic(song_id, album_art_url, preview_url, i) {
     var geometry = new THREE.BoxGeometry( 2, 2, BLOCK_LENGTH );
     var material = new THREE.MeshBasicMaterial( { map: loader.load(album_art_url)} );
     material.map.minFilter = THREE.LinearFilter;
@@ -39,7 +40,23 @@ function addSongGraphic(album_art_url, i) {
     cube.position.x = 0;
     cube.position.y = 0;
     cube.position.z = camera.position.z - 10*(i + 1);
+    songs[cube.position.z + 2] = [song_id, preview_url];
     console.log("adding song art at ", cube.position.x, cube.position.y, cube.position.z)
+}
+
+
+function playSong() {
+
+    if (camera.position.z in songs) {
+        console.log("playing song");
+        var data = songs[camera.position.z]
+        var id = data[0]
+        var preview_url = data[1]
+
+        $('.suggestion.'+id).append('<iframe src="'+preview_url+'" style="display:none;"></iframe>');
+
+    }
+
 }
 
 
@@ -53,9 +70,6 @@ var initScene = function () {
     }
 };
 
-
-// initScene();
-// render();
 
 $(document).keydown(function(e) {
     switch(e.which) {
@@ -84,6 +98,7 @@ var moveForward = function() {
     future_z -= BLOCK_LENGTH
 
     camera.translateZ(-BLOCK_LENGTH);
+    playSong();
     render();
 
     console.log("camera position", camera.position);
@@ -95,16 +110,13 @@ var moveForward = function() {
 var moveBackward = function () {
     // move camera backward
     camera.translateZ(BLOCK_LENGTH);
+    playSong();
     render();
 };
 
-// cube.position.set(1,2,1);
 
 function render() {
     // requestAnimationFrame( render );
-
-    // cube.rotation.x += 1;
-    // cube.rotation.y += 1;
 
     renderer.render(scene, camera);
 };

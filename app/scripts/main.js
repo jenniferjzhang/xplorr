@@ -255,7 +255,6 @@ var addNewSongsToList = function(err, data) {
       }
 
       $('#song-suggestions #group-'+datasetIndex).append('<div class="suggestion '+newsong.id+'">'
-        +'<img src="'+newsong.album.images[0].url+'">'
         +'<h3>'+newsong.name+'</h3>'
         +'<h4>'+artists.join(', ')+' on '+newsong.album.name+'</h4>'
         +'<button class="preview-btn" onclick="makeiframe(\''+newsong.preview_url+'\',\''+newsong.id+'\')">Preview</button>'
@@ -263,7 +262,7 @@ var addNewSongsToList = function(err, data) {
         +'<button class="explore-btn" onclick="exploreSong(\''+newsong.id+'\')">Explore This Song</button>'
         +'</div>');
 
-      addSongGraphic(newsong.album.images[1].url, i);
+      addSongGraphic(newsong.id, newsong.album.images[1].url, newsong.preview_url, i);
       render();
     }
   }
