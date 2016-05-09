@@ -242,6 +242,13 @@ var setUpExploration = function() {
 // [TODO]: make this do cool things
 var addNewSongsToList = function(err, data) {
   if (data) {
+    var temp1 = data.tracks;
+    $.each(temp1, function(){
+      this.id = 'spotify:track:'+this.id;
+    });
+    for (var i = 0; i < temp1.length; i++) {
+      songList.push(temp1[i]);
+    } 
     console.log(data);
     if ($('#song-suggestions #group-'+datasetIndex).length == 0) {
       $('#song-suggestions').prepend('<div class="suggestion-group" id="group-'+datasetIndex+'"></div>');
