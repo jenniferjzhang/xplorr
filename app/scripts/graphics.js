@@ -130,8 +130,6 @@ var moveForward = function() {
 
     console.log("camera position", camera.position);
 
-
-
 };
 
 var moveBackward = function () {
@@ -146,6 +144,12 @@ var swipeLeft = function() {
     var near_song_pos = Math.floor(camera.position.z / 10) * 10;
     console.log("near song position ", near_song_pos);
 
+    if (songs_info[near_song_pos] && songs_info[near_song_pos][2]) {
+        var cube = songs_info[near_song_pos][2];
+        cube.material.transparent = true;
+        new TWEEN.Tween(cube.material).to({opacity: 0}, 500).start();
+    }
+
 
 }
 
@@ -155,8 +159,14 @@ var swipeRight = function() {
 
 }
 
-function render() {
-    // requestAnimationFrame( render );
+var animate = function() {
+    requestAnimationFrame(animate);
+    render();
+}
 
+function render() {
+    TWEEN.update();
     renderer.render(scene, camera);
 };
+
+animate();

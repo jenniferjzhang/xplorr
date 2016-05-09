@@ -6,6 +6,7 @@
     "spotify-web-api-js": "^0.19.1",
     "oauth-js": "^0.5.2",
     "three.js": "^0.75.0",
-    "Chart.js": "^2.0.2"
+    "Chart.js": "^2.0.2",
+    "tween.js": "tweenjs#^16.3.4"
   }
 }
