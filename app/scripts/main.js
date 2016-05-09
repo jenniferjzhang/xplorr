@@ -262,7 +262,7 @@ var addNewSongsToList = function(err, data) {
         +'<button class="explore-btn" onclick="exploreSong(\''+newsong.id+'\')">Explore This Song</button>'
         +'</div>');
 
-      addSongGraphic(newsong.id, newsong.album.images[1].url, newsong.preview_url, i);
+      addSongGraphic(newsong.id, newsong.album.images[1].url, newsong.preview_url);
       render();
     }
   }

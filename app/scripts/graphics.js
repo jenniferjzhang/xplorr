@@ -14,9 +14,10 @@ var BACKWARD = 40; // down arrow key code
 var LEFT = 37;
 var RIGHT = 39;
 
-var songs = {}
+var songs = []
+var songs_info = {}
 
-camera.position.z = 5;
+camera.position.z = 0;
 
 function addCube(x, y, z, side) {
     var geometry = new THREE.BoxGeometry( 2, 5, BLOCK_LENGTH );
@@ -31,29 +32,47 @@ function addCube(x, y, z, side) {
 
 };
 
-function addSongGraphic(song_id, album_art_url, preview_url, i) {
+function addSongGraphic(song_id, album_art_url, preview_url) {
     var geometry = new THREE.BoxGeometry( 2, 2, BLOCK_LENGTH );
     var material = new THREE.MeshBasicMaterial( { map: loader.load(album_art_url)} );
     material.map.minFilter = THREE.LinearFilter;
     var cube = new THREE.Mesh( geometry, material );
     scene.add( cube );
+
+    // Get last song graphic's position
+    if (songs.length > 0) {
+        var last_song_pos = songs[songs.length - 1];
+    } else {
+        var last_song_pos = 0;
+    }
+
+    // Set song graphic position
     cube.position.x = 0;
     cube.position.y = 0;
-    cube.position.z = camera.position.z - 10*(i + 1);
-    songs[cube.position.z + 2] = [song_id, preview_url];
-    console.log("adding song art at ", cube.position.x, cube.position.y, cube.position.z)
+    cube.position.z = last_song_pos - 10;
+
+    // Update lists
+    songs.push(cube.position.z);
+    songs_info[cube.position.z] = [song_id, preview_url, cube];
+
+    console.log("adding song art at ", cube.position.z)
 }
 
 
 function playSong() {
 
-    if (camera.position.z in songs) {
+    var near_song_pos = Math.floor(camera.position.z / 10) * 10;
+    console.log("near song position ", near_song_pos);
+    if (near_song_pos in songs_info) {
         console.log("playing song");
-        var data = songs[camera.position.z]
+        var data = songs_info[near_song_pos]
         var id = data[0]
         var preview_url = data[1]
 
-        $('.suggestion.'+id).append('<iframe src="'+preview_url+'" style="display:none;"></iframe>');
+        if ($('.suggestion.'+id).find('iframe').length == 0) {
+            $('.suggestion.'+id).append('<iframe src="'+preview_url+'" style="display:none;"></iframe>');
+        }
+        console.log("has iframe? ", $('.suggestion.'+id).find('iframe').length, $('.suggestion.'+id).find('iframe'));
 
     }
 
@@ -80,6 +99,14 @@ $(document).keydown(function(e) {
 
         case BACKWARD: // down
             moveBackward();
+            break;
+
+        case LEFT:
+            swipeLeft();
+            break;
+
+        case RIGHT:
+            swipeRight();
             break;
 
         default: return; // exit this handler for other keys
@@ -110,10 +137,23 @@ var moveForward = function() {
 var moveBackward = function () {
     // move camera backward
     camera.translateZ(BLOCK_LENGTH);
-    playSong();
+    // playSong();
     render();
 };
 
+var swipeLeft = function() {
+
+    var near_song_pos = Math.floor(camera.position.z / 10) * 10;
+    console.log("near song position ", near_song_pos);
+
+
+}
+
+var swipeRight = function() {
+    var near_song_pos = Math.floor(camera.position.z / 10) * 10;
+    console.log("near song position ", near_song_pos);
+
+}
 
 function render() {
     // requestAnimationFrame( render );
