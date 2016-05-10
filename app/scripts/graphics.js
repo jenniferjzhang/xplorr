@@ -46,7 +46,6 @@ function addCube(x, y, z, side) {
     cube.position.x = x;
     cube.position.y = y;
     cube.position.z = z;
-    console.log("adding cubes at ", x, y, z)
 
 };
 

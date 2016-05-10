@@ -244,6 +244,7 @@ var addNewSongsToList = function(err, data) {
   if (data) {
     var temp1 = data.tracks;
     $.each(temp1, function(){
+      this.song_id = this.id;
       this.id = 'spotify:track:'+this.id;
     });
     for (var i = 0; i < temp1.length; i++) {
@@ -261,15 +262,16 @@ var addNewSongsToList = function(err, data) {
         artists.push(newsong.artists[j].name);
       }
 
-      $('#song-suggestions #group-'+datasetIndex).append('<div class="suggestion '+newsong.id+'">'
+      $('#song-suggestions #group-'+datasetIndex).append('<div class="suggestion '+newsong.song_id+'">'
         +'<h3>'+newsong.name+'</h3>'
         +'<h4>'+artists.join(', ')+' on '+newsong.album.name+'</h4>'
-        +'<button class="preview-btn" onclick="makeiframe(\''+newsong.preview_url+'\',\''+newsong.id+'\')">Preview</button>'
+        // +'<button class="preview-btn" onclick="makeiframe(\''+newsong.preview_url+'\',\''+newsong.song_id+'\')">Preview</button>'
         +'<button class="playlist-btn" onclick="addToPlaylist(\''+newsong.id+'\')">Add to Playlist</button>'
         +'<button class="explore-btn" onclick="exploreSong(\''+newsong.id+'\')">Explore This Song</button>'
         +'</div>');
 
-      addSongGraphic(newsong.id, newsong.album.images[1].url, newsong.preview_url);
+      console.log(newsong.song_id, newsong.album.images[1].url, newsong.preview_url);
+      addSongGraphic(newsong.song_id, newsong.album.images[1].url, newsong.preview_url);
       render();
     }
   }
@@ -449,8 +451,7 @@ var updateTextClass = function(traitIndex) {
 // this makes an ugly iframe that has the song url in it
 // [TODO:]: fix bug where this makes all matching songs play the preview
 var makeiframe = function(url, id) {
-  $('.suggestion.'+id).append('<iframe src="'+url+'"></iframe>');
-  $('.suggestion.'+id+' .preview-btn').hide();
+  $('.song-suggestions').append('<iframe src="'+url+'"></iframe>');
 }
 
 // this just adds it to our local representation of the playlist
