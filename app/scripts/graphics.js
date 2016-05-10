@@ -35,7 +35,7 @@ var GLOW_MATERIAL = new THREE.ShaderMaterial(
     opacity: 0.01
 }   );
 
-camera.position.z = 0;
+camera.position.z = 2;
 
 function addCube(x, y, z, side) {
     var geometry = new THREE.BoxGeometry( 2, 5, BLOCK_LENGTH );
@@ -77,9 +77,9 @@ function addSongGraphic(song_id, album_art_url, preview_url) {
 }
 
 
+// Called only when camera is at position that is multiple of 10.
 function playSong() {
-
-    var near_song_pos = Math.floor(camera.position.z / 10) * 10;
+    var near_song_pos = (Math.floor(camera.position.z / 10) * 10) - 10;
     console.log("near song position ", near_song_pos);
     if (near_song_pos in songs_info) {
         console.log("playing song");
@@ -87,10 +87,17 @@ function playSong() {
         var id = data[0]
         var preview_url = data[1]
 
-        if ($('.suggestion.'+id).find('iframe').length == 0) {
-            $('.suggestion.'+id).append('<iframe src="'+preview_url+'" style="display:none;"></iframe>');
+        while ($('#song-suggestions').find('iframe').length > 0) {
+            // If there is another preview, remove them.
+
+            console.log("removing...");
+            $('#song-suggestions').find('iframe').remove();
         }
-        console.log("has iframe? ", $('.suggestion.'+id).find('iframe').length, $('.suggestion.'+id).find('iframe'));
+
+        // Check if the div has the preview of the song currently in front of us.
+        if (!$('#song-suggestions').find('iframe').hasClass(id)) {
+            $('#song-suggestions').append('<iframe src="'+preview_url+'" style="display:none;" class="'+id+'""></iframe>');
+        }
 
     }
 
@@ -111,7 +118,6 @@ var initScene = function () {
 $(document).keydown(function(e) {
     switch(e.which) {
         case FORWARD: // up arrow
-            console.log ("MOVE FORWARD");
             moveForward();
             break;
 
@@ -142,11 +148,15 @@ var moveForward = function() {
 
     future_z -= BLOCK_LENGTH
 
-    camera.translateZ(-BLOCK_LENGTH);
-    playSong();
-    render();
+    console.log(camera.position.z);
 
-    console.log("camera position", camera.position);
+    camera.translateZ(-BLOCK_LENGTH);
+    if (camera.position.z % 10 == 0) {
+        console.log("try playing song");
+        playSong();
+
+    }
+    render();
 
 };
 
@@ -159,7 +169,7 @@ var moveBackward = function () {
 
 var swipeLeft = function() {
 
-    var near_song_pos = Math.floor(camera.position.z / 10) * 10;
+    var near_song_pos = (Math.floor(camera.position.z / 10) * 10) - 10;
     console.log("left near song position ", near_song_pos);
 
     if (songs_info[near_song_pos] && songs_info[near_song_pos][2] && songs_info[near_song_pos][3] != false) {
@@ -171,7 +181,7 @@ var swipeLeft = function() {
 }
 
 var swipeRight = function() {
-    var near_song_pos = Math.floor(camera.position.z / 10) * 10;
+    var near_song_pos = (Math.floor(camera.position.z / 10) * 10) - 10;
     console.log("right near song position ", near_song_pos);
 
     if (songs_info[near_song_pos] && songs_info[near_song_pos][2] && songs_info[near_song_pos][3] != false) {
