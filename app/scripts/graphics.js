@@ -17,6 +17,24 @@ var RIGHT = 39;
 var songs = []
 var songs_info = {}
 
+// glow effect from http://stemkoski.github.io/Three.js/Shader-Glow.html
+var GLOW_MATERIAL = new THREE.ShaderMaterial( 
+{
+    uniforms: 
+    { 
+        "c":   { type: "f", value: 1.0 },
+        "p":   { type: "f", value: 1.4 },
+        glowColor: { type: "c", value: new THREE.Color(0x00ff0f) },
+        viewVector: { type: "v3", value: camera.position }
+    },
+    vertexShader:   document.getElementById( 'vertexShader'   ).textContent,
+    fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
+    side: THREE.FrontSide,
+    blending: THREE.AdditiveBlending,
+    transparent: true,
+    opacity: 0.01
+}   );
+
 camera.position.z = 0;
 
 function addCube(x, y, z, side) {
@@ -53,7 +71,8 @@ function addSongGraphic(song_id, album_art_url, preview_url) {
 
     // Update lists
     songs.push(cube.position.z);
-    songs_info[cube.position.z] = [song_id, preview_url, cube];
+    // id, preview url, cube object, whether it is in final playlist
+    songs_info[cube.position.z] = [song_id, preview_url, cube, null];
 
     console.log("adding song art at ", cube.position.z)
 }
@@ -142,21 +161,33 @@ var moveBackward = function () {
 var swipeLeft = function() {
 
     var near_song_pos = Math.floor(camera.position.z / 10) * 10;
-    console.log("near song position ", near_song_pos);
+    console.log("left near song position ", near_song_pos);
 
-    if (songs_info[near_song_pos] && songs_info[near_song_pos][2]) {
+    if (songs_info[near_song_pos] && songs_info[near_song_pos][2] && songs_info[near_song_pos][3] != false) {
         var cube = songs_info[near_song_pos][2];
         cube.material.transparent = true;
         new TWEEN.Tween(cube.material).to({opacity: 0}, 500).start();
+        songs_info[near_song_pos][3] = false;
     }
-
-
 }
 
 var swipeRight = function() {
     var near_song_pos = Math.floor(camera.position.z / 10) * 10;
-    console.log("near song position ", near_song_pos);
+    console.log("right near song position ", near_song_pos);
 
+    if (songs_info[near_song_pos] && songs_info[near_song_pos][2] && songs_info[near_song_pos][3] != false) {
+        var cube = songs_info[near_song_pos][2];
+        var geom = cube.geometry.clone();
+        var mat = GLOW_MATERIAL.clone();
+        var glowingCube = new THREE.Mesh(geom, mat);
+        glowingCube.position.x = cube.position.x;
+        glowingCube.position.y = cube.position.y;
+        glowingCube.position.z = cube.position.z;
+        glowingCube.scale.multiplyScalar(1.05);
+        scene.add(glowingCube);
+        render();
+        songs_info[near_song_pos][3] = true;
+    }
 }
 
 var animate = function() {
