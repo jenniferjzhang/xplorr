@@ -57,7 +57,7 @@ function addGrass(x, y, z) {
     var chosenValue = Math.random() < 0.5 ? '../images/grasslight-small.jpg': '../images/grasslight-small2.jpg';
 
     var geometry = new THREE.BoxGeometry( 10, 2, BLOCK_LENGTH );
-    var material = new THREE.MeshBasicMaterial( { map: loader.load('../images/grasslight-small.jpg')} );
+    var material = new THREE.MeshBasicMaterial( { map: loader.load(chosenValue)} );
     material.map.minFilter = THREE.LinearFilter;
     var cube = new THREE.Mesh( geometry, material );
     scene.add( cube );

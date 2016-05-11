@@ -533,7 +533,6 @@ var generateSongRecommendations = function() {
       rec_data["target_"+traits[i]] = radarData.datasets[datasetIndex].data[i]/100;
       // add a small amount of jitter so we don't get the same requests over and over again
       rec_data["target_"+traits[i]] += Math.random()*0.2 - 0.1;
-
     }
 
     spotifyApi.getRecommendations(rec_data, addNewSongsToList);
