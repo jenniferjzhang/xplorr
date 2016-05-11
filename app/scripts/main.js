@@ -88,6 +88,13 @@ var finishQuiz = function() {
 
 var processQuiz = function(err, data) {
   songList = data.tracks;
+
+  for (var i = 0; i < data.tracks.length; i++) {
+    var newsong = data.tracks[i];
+    addSongGraphic(newsong.id, newsong.album.images[1].url, newsong.preview_url);
+  }
+
+
   $.each(songList, function(){
     this.id = 'spotify:track:'+this.id;
   });
@@ -270,7 +277,6 @@ var addNewSongsToList = function(err, data) {
         +'<button class="explore-btn" onclick="exploreSong(\''+newsong.id+'\')">Explore This Song</button>'
         +'</div>');
 
-      console.log(newsong.song_id, newsong.album.images[1].url, newsong.preview_url);
       addSongGraphic(newsong.song_id, newsong.album.images[1].url, newsong.preview_url);
       render();
     }

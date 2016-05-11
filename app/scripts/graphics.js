@@ -151,6 +151,7 @@ var moveForward = function() {
     console.log(camera.position.z);
 
     camera.translateZ(-BLOCK_LENGTH);
+
     if (camera.position.z % 10 == 0) {
         console.log("try playing song");
         playSong();
@@ -168,24 +169,43 @@ var moveBackward = function () {
 };
 
 var swipeLeft = function() {
-
-    var near_song_pos = (Math.floor(camera.position.z / 10) * 10) - 10;
-    console.log("left near song position ", near_song_pos);
+    var z = Math.floor(camera.position.z / 10) * 10;
+    var near_song_pos = z;
+    if (camera.position.z % 10 == 0) {
+        near_song_pos = z - 10;
+    }
+    console.log("camera", camera.position.z, "left near song position ", near_song_pos);
 
     if (songs_info[near_song_pos] && songs_info[near_song_pos][2] && songs_info[near_song_pos][3] != false) {
         var cube = songs_info[near_song_pos][2];
         cube.material.transparent = true;
         new TWEEN.Tween(cube.material).to({opacity: 0}, 500).start();
         songs_info[near_song_pos][3] = false;
+
+        // Get rid of the preview URL
+        songs_info[near_song_pos][1] = null;
+    }
+
+    while ($('#song-suggestions').find('iframe').length > 0) {
+        // If there is another preview, remove them.
+
+        console.log("removing...");
+        $('#song-suggestions').find('iframe').remove();
     }
 }
 
 var swipeRight = function() {
-    var near_song_pos = (Math.floor(camera.position.z / 10) * 10) - 10;
-    console.log("right near song position ", near_song_pos);
+    var z = Math.floor(camera.position.z / 10) * 10;
+    var near_song_pos = z;
+    if (camera.position.z % 10 == 0) {
+        near_song_pos = z - 10;
+    }
+    console.log("camera", camera.position.z, "right near song position ", near_song_pos);
 
     if (songs_info[near_song_pos] && songs_info[near_song_pos][2] && songs_info[near_song_pos][3] != false) {
+        console.log("swipe right on song", songs_info[near_song_pos][0]);
         var cube = songs_info[near_song_pos][2];
+        console.log("add glow at ", cube.position.z);
         var geom = cube.geometry.clone();
         var mat = GLOW_MATERIAL.clone();
         var glowingCube = new THREE.Mesh(geom, mat);
