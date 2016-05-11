@@ -369,54 +369,6 @@ var updateVisualInfo = function() {
   }       
 }
 
-// these all change the desired traits and update the graph
-var increaseTrait = function(traitIndex) {
-  radarData.datasets[datasetIndex].data[traitIndex] += 5;  
-  myRadarChart.update(true);
-  updateTextClass(traitIndex);
-}
-
-var decreaseTrait = function(traitIndex) {
-  radarData.datasets[datasetIndex].data[traitIndex] = Math.max(0, radarData.datasets[datasetIndex].data[traitIndex]-5) ;
-  myRadarChart.update(true);
-  updateTextClass(traitIndex);
-}
-
-var resetTrait = function(traitIndex) {
-  radarData.datasets[datasetIndex].data[traitIndex] = radarData.datasets[0].data[traitIndex];
-  myRadarChart.update(true);
-  updateTextClass(traitIndex);
-}
-
-// makes the text green or red, based on comparison to baseline
-var updateTextClass = function(traitIndex) {
-  var a = radarData.datasets[datasetIndex].data[traitIndex];
-  var b = radarData.datasets[0].data[traitIndex];
-  var $element = $("#"+traits[traitIndex]);
-  if ( a == b ) {
-    $element.removeClass("increased decreased");
-  } else if (a < b) {
-    $element.removeClass("increased");
-    $element.addClass("decreased");
-  } else {
-    $element.removeClass("decreased");
-    $element.addClass("increased");
-  }
-
-  $element.text(a);
-}
-
-/*// this makes an ugly iframe that has the song url in it
-// [TODO:]: fix bug where this makes all matching songs play the preview
-var makeiframe = function(url, id) {
-  $('.song-suggestions').append('<iframe src="'+url+'"></iframe>');
-}*/
-
-/*// this just adds it to our local representation of the playlist
-// doesn't actually add it to the spotify playlist
-var addToPlaylist = function(id) {
-  songList.push({id: 'spotify:track:' + id});
-}*/
 
 // this looks up the new song
 // [TODO:] add callback and hook up to graphics,
@@ -528,35 +480,4 @@ $(document).on('ready', function(){
     spotify = OAuth.create('spotify');
     startQuiz();
   });  
-
-  // this looks for recommendations based on the last songs added to the songlist
-  // as well as the desired song features
-
-  var NUM_SONG_REQS = 5; // number of recommandations to look for
-  $('#song-generation-btn').on('click', function(e) {
-    var seeds = songList.slice(-5).map(function(obj){
-      return obj.id.split(':')[2];
-    });
-    var rec_data = {seed_tracks: seeds, limit: NUM_SONG_REQS};
-    // tempo isn't normalized but everything else is
-    rec_data["target_tempo"] = radarData.datasets[datasetIndex].data[0];
-    for (var i = 1; i < traits.length; i++) {
-      rec_data["target_"+traits[i]] = radarData.datasets[datasetIndex].data[i]/100;
-      // add a small amount of jitter so we don't get the same requests over and over again
-      rec_data["target_"+traits[i]] += Math.random()*0.2 - 0.1;
-    }
-
-    spotifyApi.getRecommendations(rec_data, addNewSongsToList);
-  });
-
-  // modal stuff for the current song preview button
-  $('#myModal').on('show.bs.modal', function(e) {
-    $('#current-song-iframe').attr('src', currentSong.info.preview_url);
-  })
-
-  $('#myModal').on('hide.bs.modal', function(e) {
-    $('#current-song-iframe').attr('src', '');
-  })
-
-  $('#song-features ul button').addClass('btn btn-sm btn-primary'); 
 });
