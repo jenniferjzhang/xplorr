@@ -498,7 +498,7 @@ var replaceTracks = function() {
   songuris = [];
   for (var key in songs_info) {
     if (songs_info.hasOwnProperty(key) && songs_info[key][3]) {
-      songuris.push(songs_info[key][0]);
+      songuris.push('spotify:track:' + songs_info[key][0]);
     }
   }
   spotifyApi.replaceTracksInPlaylist(sessionUser.id, sessionPlaylist.id, songuris, finishSave);

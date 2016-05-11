@@ -38,16 +38,46 @@ var GLOW_MATERIAL = new THREE.ShaderMaterial(
 camera.position.z = 2;
 
 function addCube(x, y, z, side) {
+    var chosenValue = Math.random() < 0.5 ? '../images/stone-wall.jpg': '../images/stone-wall-lighter.jpg';
+
     var geometry = new THREE.BoxGeometry( 2, 5, BLOCK_LENGTH );
-    var material = new THREE.MeshBasicMaterial( { color: Math.random() * 0xffffff} );
-    material.minFilter =  THREE.LinearFilter
+    var material = new THREE.MeshBasicMaterial( { map: loader.load(chosenValue)} );
+    material.map.minFilter = THREE.LinearFilter;
     var cube = new THREE.Mesh( geometry, material );
     scene.add( cube );
+
     cube.position.x = x;
     cube.position.y = y;
     cube.position.z = z;
 
 };
+
+// Grass image from https://github.com/jeromeetienne/threex.grassground
+function addGrass(x, y, z) {
+    var chosenValue = Math.random() < 0.5 ? '../images/grasslight-small.jpg': '../images/grasslight-small2.jpg';
+
+    var geometry = new THREE.BoxGeometry( 10, 2, BLOCK_LENGTH );
+    var material = new THREE.MeshBasicMaterial( { map: loader.load('../images/grasslight-small.jpg')} );
+    material.map.minFilter = THREE.LinearFilter;
+    var cube = new THREE.Mesh( geometry, material );
+    scene.add( cube );
+
+    cube.position.x = x;
+    cube.position.y = y;
+    cube.position.z = z;
+}
+
+function addSky(x, y, z) {
+    var geometry = new THREE.BoxGeometry( 10, 2, BLOCK_LENGTH );
+    var material = new THREE.MeshBasicMaterial( { map: loader.load('../images/galaxy_starfield.png')} );
+    material.map.minFilter = THREE.LinearFilter;
+    var cube = new THREE.Mesh( geometry, material );
+    scene.add( cube );
+
+    cube.position.x = x;
+    cube.position.y = y;
+    cube.position.z = z;   
+}
 
 function addSongGraphic(song_id, album_art_url, preview_url, song_name, song_artist) {
     var geometry = new THREE.BoxGeometry( 2, 2, BLOCK_LENGTH );
@@ -128,13 +158,25 @@ function playSong() {
 
 
 var initScene = function () {
+
+    scene.add(new THREE.AmbientLight(0x333333));
+
+    var light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(0,5,0);
+    scene.add(light);
     //left side of hallway
+
     for (i = 0; i > future_z; i -= BLOCK_LENGTH) {
         addCube(5, 0, i, 'right');
+        addGrass(0, -4, i);
+        addSky(0, 5, i);
+
+
     }
     for (i = 0; i > future_z; i-= BLOCK_LENGTH) {
         addCube(-5, 0, i, 'left');
     }
+
 };
 
 
@@ -169,9 +211,10 @@ var moveForward = function() {
     addCube(5, 0, future_z, 'right')
     addCube(-5, 0, future_z, 'left')
 
-    future_z -= BLOCK_LENGTH
+    addGrass(0, -4, future_z);
+    addSky(0, 5, future_z);
 
-    console.log(camera.position.z);
+    future_z -= BLOCK_LENGTH
 
     camera.translateZ(-BLOCK_LENGTH);
 
