@@ -4,6 +4,9 @@ var HEIGHT = window.innerHeight;
 var camera = new THREE.PerspectiveCamera( 75, WIDTH/HEIGHT, 0.1, 1000 );
 var renderer = new THREE.WebGLRenderer({antialias:true});
 var loader = new THREE.TextureLoader;
+var gui = null;
+var songAttributeText;
+
 loader.crossOrigin = '';
 renderer.setSize( WIDTH, HEIGHT );
 var future_z = -100
@@ -17,6 +20,8 @@ var RIGHT = 39;
 var songs = []
 var songs_info = {}
 
+
+
 // glow effect from http://stemkoski.github.io/Three.js/Shader-Glow.html
 var GLOW_MATERIAL = new THREE.ShaderMaterial( 
 {
@@ -24,7 +29,7 @@ var GLOW_MATERIAL = new THREE.ShaderMaterial(
     { 
         "c":   { type: "f", value: 1.0 },
         "p":   { type: "f", value: 1.4 },
-        glowColor: { type: "c", value: new THREE.Color(0x00ff0f) },
+        glowColor: { type: "c", value: new THREE.Color(0x27ae60) },
         viewVector: { type: "v3", value: camera.position }
     },
     vertexShader:   document.getElementById( 'vertexShader'   ).textContent,
@@ -35,7 +40,9 @@ var GLOW_MATERIAL = new THREE.ShaderMaterial(
     opacity: 0.01
 }   );
 
+camera.position.y = 1.5;
 camera.position.z = 2;
+camera.rotation.x -= .25;
 
 function addCube(x, y, z, side) {
     var chosenValue = Math.random() < 0.5 ? '../images/stone-wall.jpg': '../images/stone-wall-lighter.jpg';
@@ -112,9 +119,9 @@ function addSongGraphic(song_id, album_art_url, preview_url, song_name, song_art
     canvas1.width = 256;
     canvas1.height = 128;
     var context1 = canvas1.getContext('2d');
-    context1.font = "Bold 10px Arial";
+    context1.font = "Bold 14px Arial";
     context1.fillStyle = "rgba(255,255,255,0.95)";
-    context1.fillText(song_name + ' by ' + song_artist, 0, 12);
+    context1.fillText(song_name + ' by ' + song_artist, 0, 16);
     
     // canvas contents will be used for a texture
     var texture1 = new THREE.Texture(canvas1) 
@@ -162,8 +169,7 @@ function playSong() {
 }
 
 
-var initScene = function () {
-
+var initScene = function (data) {
     scene.add(new THREE.AmbientLight(0x333333));
 
     var light = new THREE.DirectionalLight(0xffffff, 1);
@@ -181,9 +187,54 @@ var initScene = function () {
     for (i = 0; i > future_z; i-= BLOCK_LENGTH) {
         addCube(-5, 0, i, 'left');
     }
-
 };
 
+var SongAttributeControls = function (_tempo, _acousticness, _danceability, _energy, _happiness) {
+    this.tempo = _tempo;
+    this.acousticness = _acousticness;
+    this.danceability = _danceability;
+    this.energy = _energy;
+    this.happiness = _happiness;
+};
+
+
+var initGUI = function () {
+    gui = new dat.GUI();
+    songAttributeText = new SongAttributeControls(
+        currentSong.features.tempo, 
+        currentSong.features.acousticness*100, 
+        currentSong.features.danceability*100, 
+        currentSong.features.energy*100, 
+        currentSong.features.valence*100);
+    var songAttributesMenu = gui.addFolder('Song Attributes');
+    songAttributesMenu.add(songAttributeText, 'tempo', 0, 200).listen();
+    songAttributesMenu.add(songAttributeText, 'acousticness', 0, 100).listen();
+    songAttributesMenu.add(songAttributeText, 'danceability', 0, 100).listen();
+    songAttributesMenu.add(songAttributeText, 'energy', 0, 100).listen();    
+    songAttributesMenu.add(songAttributeText, 'happiness', 0, 100).listen();
+    songAttributesMenu.open();
+    gui.add(updateCurrentSongAndExplore, 'get current song features');
+};
+
+var updateCurrentSongAndExplore = {'get current song features': function() {
+    var z = Math.floor(camera.position.z / 10) * 10;
+    var near_song_pos = z;
+    if (camera.position.z % 10 == 0) {
+        near_song_pos = z - 10;
+    }
+
+    if (songs_info[near_song_pos] && songs_info[near_song_pos][0]) {
+        exploreSong(songs_info[near_song_pos][0]);
+    }
+}};
+
+var updateGUI = function() {
+    songAttributeText.tempo = currentSong.features.tempo;
+    songAttributeText.acousticness = currentSong.features.acousticness*100;
+    songAttributeText.danceability = currentSong.features.danceability*100;
+    songAttributeText.energy = currentSong.features.energy*100;
+    songAttributeText.happiness = currentSong.features.valence*100;
+}
 
 $(document).keydown(function(e) {
     switch(e.which) {
@@ -221,7 +272,9 @@ var moveForward = function() {
 
     future_z -= BLOCK_LENGTH
 
+    camera.rotation.x += 0.25;
     camera.translateZ(-BLOCK_LENGTH);
+    camera.rotation.x -= 0.25;
 
     // Play the song when we get to a z position multiple of 10.
     if (camera.position.z % 10 == 0) {
@@ -241,7 +294,10 @@ var moveForward = function() {
 
 var moveBackward = function () {
     // move camera backward
+    camera.rotation.x += 0.25;
     camera.translateZ(BLOCK_LENGTH);
+    camera.rotation.x -= 0.25;
+
     // playSong();
     render();
 };

@@ -261,168 +261,23 @@ var setUpSongInfo = function(err, data) {
     currentSong.info = data;
   }
 
-  setUpGraph();
+  initGUI();
 }
 
 // gets the song info, the look to update text and graph visuals
 var updateSongInfo = function(err, data) {
   // save the current song's graph before resetting
-  radarData.datasets[datasetIndex].label = currentSong.info.name;
-  radarData.datasets[datasetIndex].data = radarData.datasets[0].data;
-
   currentSong.info = data;
 
-  updateVisualInfo();
+  //updateVisualInfo();
+
+  updateGUI();
 }
-
-
-// initiailizes the web graph using chart.js
-var setUpGraph = function() {
-  ctx = document.getElementById('myChart').getContext('2d');
-  ctx.canvas.width = 400;
-  ctx.canvas.height = 400;
-  radarData = {
-    labels:["tempo", "acousticness", "danceability", "energy", "instrumentalness", "happiness"],
-    datasets: [
-      //current
-      {
-          label: currentSong.info.name,
-          backgroundColor: "rgba(179,181,198,0.2)",
-          borderColor: "rgba(179,181,198,1)",
-          pointBackgroundColor: "rgba(179,181,198,1)",
-          pointBorderColor: "#fff",
-          pointHoverBackgroundColor: "#fff",
-          pointHoverBorderColor: "rgba(179,181,198,1)",
-          data: [currentSong.features.tempo, 
-          currentSong.features.acousticness*100, 
-          currentSong.features.danceability*100, 
-          currentSong.features.energy*100, 
-          currentSong.features.valence*100]
-      },
-    ]
-  }
-  myRadarChart = new Chart(ctx, {
-    type: 'radar',
-    data: radarData//,
-    //options: options
-  }); 
-
-  updateVisualInfo();
-}
-
-var updateVisualInfo = function() {
-
-  // this does text boxes
-  $('#song-features #track').text(currentSong.info.name);
-  var artists = [];
-  for (var i =0 ; i < currentSong.info.artists.length; i++) {
-    artists.push(currentSong.info.artists[i].name);
-  };
-  $('#song-features #artist').text(artists.join(", "));
-  $('#song-features #album').text(currentSong.info.album.name);
-  
-  $('#song-features #tempo').text(currentSong.features.tempo);
-  $('#song-features #acousticness').text(currentSong.features.acousticness*100);
-  $('#song-features #danceability').text(currentSong.features.danceability*100);
-  $('#song-features #energy').text(currentSong.features.energy*100);
-  $('#song-features #happiness').text(currentSong.features.valence*100);
-  $('#song-features').show().css('display', 'inline-block');
-  $('#chart-container').show().css('display', 'inline-block');
-
-  // set new baseline and editable regions to be the base value of this song
-  var newData = [currentSong.features.tempo, 
-          currentSong.features.acousticness*100, 
-          currentSong.features.danceability*100, 
-          currentSong.features.energy*100, 
-          currentSong.features.valence*100];
-
-  // // b/c i dont' know how to deepcopy
-  var newData2 = [currentSong.features.tempo, 
-          currentSong.features.acousticness*100, 
-          currentSong.features.danceability*100, 
-          currentSong.features.energy*100, 
-          currentSong.features.valence*100];
-
-  var color = [Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), Math.floor(Math.random() * 255)];
-  var opacityString = "rgba("+color.join()+",0.2)";
-  var colorString = "rgba("+color.join()+",1)";
-
-  var newDataset = {
-    label: "Desired Traits",
-    backgroundColor: opacityString,
-    borderColor: colorString,
-    pointBackgroundColor: colorString,
-    pointBorderColor: "#fff",
-    pointHoverBackgroundColor: "#fff",
-    pointHoverBorderColor: colorString,
-    data: newData
-  }
-  radarData.datasets.push(newDataset);
-
-  radarData.datasets[0].data = newData2;
-  radarData.datasets[0].label = currentSong.info.name;
-  myRadarChart.update();
-  datasetIndex += 1;
-
-  for (var i = 0; i < traits.length; i++) {
-    updateTextClass(i);
-  }       
-}
-
-// these all change the desired traits and update the graph
-var increaseTrait = function(traitIndex) {
-  radarData.datasets[datasetIndex].data[traitIndex] += 5;  
-  myRadarChart.update(true);
-  updateTextClass(traitIndex);
-}
-
-var decreaseTrait = function(traitIndex) {
-  radarData.datasets[datasetIndex].data[traitIndex] = Math.max(0, radarData.datasets[datasetIndex].data[traitIndex]-5) ;
-  myRadarChart.update(true);
-  updateTextClass(traitIndex);
-}
-
-var resetTrait = function(traitIndex) {
-  radarData.datasets[datasetIndex].data[traitIndex] = radarData.datasets[0].data[traitIndex];
-  myRadarChart.update(true);
-  updateTextClass(traitIndex);
-}
-
-// makes the text green or red, based on comparison to baseline
-var updateTextClass = function(traitIndex) {
-  var a = radarData.datasets[datasetIndex].data[traitIndex];
-  var b = radarData.datasets[0].data[traitIndex];
-  var $element = $("#"+traits[traitIndex]);
-  if ( a == b ) {
-    $element.removeClass("increased decreased");
-  } else if (a < b) {
-    $element.removeClass("increased");
-    $element.addClass("decreased");
-  } else {
-    $element.removeClass("decreased");
-    $element.addClass("increased");
-  }
-
-  $element.text(a);
-}
-
-/*// this makes an ugly iframe that has the song url in it
-// [TODO:]: fix bug where this makes all matching songs play the preview
-var makeiframe = function(url, id) {
-  $('.song-suggestions').append('<iframe src="'+url+'"></iframe>');
-}*/
-
-/*// this just adds it to our local representation of the playlist
-// doesn't actually add it to the spotify playlist
-var addToPlaylist = function(id) {
-  songList.push({id: 'spotify:track:' + id});
-}*/
 
 // this looks up the new song
 // [TODO:] add callback and hook up to graphics,
 // this is when we walk down a new path
 var exploreSong = function(id) {
-  $('.suggestion.'+id).addClass('explored');
   currentSong.id = id;
   spotifyApi.getAudioFeaturesForTrack(currentSong.id, updateSongFeatures);
 }
@@ -499,12 +354,11 @@ var generateSongRecommendations = function() {
 
     var rec_data = {seed_tracks: seeds, limit: NUM_SONG_REQS};
     // tempo isn't normalized but everything else is
-    rec_data["target_tempo"] = radarData.datasets[datasetIndex].data[0];
-    for (var i = 1; i < traits.length; i++) {
-      rec_data["target_"+traits[i]] = radarData.datasets[datasetIndex].data[i]/100;
-      // add a small amount of jitter so we don't get the same requests over and over again
-      rec_data["target_"+traits[i]] += Math.random()*0.2 - 0.1;
-    }
+    rec_data["target_tempo"] = songAttributeText['tempo'];
+    rec_data["target_acousticness"] = songAttributeText['acousticness']/100;
+    rec_data["target_danceability"] = songAttributeText['danceability']/100;
+    rec_data["target_energy"] = songAttributeText['energy']/100;
+    rec_data["target_valence"] = songAttributeText['happiness']/100;
 
     spotifyApi.getRecommendations(rec_data, addNewSongsToList);
 }
@@ -528,35 +382,4 @@ $(document).on('ready', function(){
     spotify = OAuth.create('spotify');
     startQuiz();
   });  
-
-  // this looks for recommendations based on the last songs added to the songlist
-  // as well as the desired song features
-
-  var NUM_SONG_REQS = 5; // number of recommandations to look for
-  $('#song-generation-btn').on('click', function(e) {
-    var seeds = songList.slice(-5).map(function(obj){
-      return obj.id.split(':')[2];
-    });
-    var rec_data = {seed_tracks: seeds, limit: NUM_SONG_REQS};
-    // tempo isn't normalized but everything else is
-    rec_data["target_tempo"] = radarData.datasets[datasetIndex].data[0];
-    for (var i = 1; i < traits.length; i++) {
-      rec_data["target_"+traits[i]] = radarData.datasets[datasetIndex].data[i]/100;
-      // add a small amount of jitter so we don't get the same requests over and over again
-      rec_data["target_"+traits[i]] += Math.random()*0.2 - 0.1;
-    }
-
-    spotifyApi.getRecommendations(rec_data, addNewSongsToList);
-  });
-
-  // modal stuff for the current song preview button
-  $('#myModal').on('show.bs.modal', function(e) {
-    $('#current-song-iframe').attr('src', currentSong.info.preview_url);
-  })
-
-  $('#myModal').on('hide.bs.modal', function(e) {
-    $('#current-song-iframe').attr('src', '');
-  })
-
-  $('#song-features ul button').addClass('btn btn-sm btn-primary'); 
 });

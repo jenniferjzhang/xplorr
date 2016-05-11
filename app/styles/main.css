@@ -215,3 +215,5 @@ body {
   text-transform: uppercase;
 
 }
+
+canvas{ width:100%;height:100%;}
