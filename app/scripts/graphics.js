@@ -24,7 +24,7 @@ var GLOW_MATERIAL = new THREE.ShaderMaterial(
     { 
         "c":   { type: "f", value: 1.0 },
         "p":   { type: "f", value: 1.4 },
-        glowColor: { type: "c", value: new THREE.Color(0x00ff0f) },
+        glowColor: { type: "c", value: new THREE.Color(0x27ae60) },
         viewVector: { type: "v3", value: camera.position }
     },
     vertexShader:   document.getElementById( 'vertexShader'   ).textContent,
@@ -35,7 +35,9 @@ var GLOW_MATERIAL = new THREE.ShaderMaterial(
     opacity: 0.01
 }   );
 
+camera.position.y = 1.5;
 camera.position.z = 2;
+camera.rotation.x -= .25;
 
 function addCube(x, y, z, side) {
     var chosenValue = Math.random() < 0.5 ? '../images/stone-wall.jpg': '../images/stone-wall-lighter.jpg';
@@ -112,9 +114,9 @@ function addSongGraphic(song_id, album_art_url, preview_url, song_name, song_art
     canvas1.width = 256;
     canvas1.height = 128;
     var context1 = canvas1.getContext('2d');
-    context1.font = "Bold 10px Arial";
+    context1.font = "Bold 14px Arial";
     context1.fillStyle = "rgba(255,255,255,0.95)";
-    context1.fillText(song_name + ' by ' + song_artist, 0, 12);
+    context1.fillText(song_name + ' by ' + song_artist, 0, 16);
     
     // canvas contents will be used for a texture
     var texture1 = new THREE.Texture(canvas1) 
@@ -182,6 +184,38 @@ var initScene = function () {
         addCube(-5, 0, i, 'left');
     }
 
+
+    var PlaylistSeedControls = function () {
+            this.artist = 'Search for an artist';
+            this.genre = 0.8;
+        };
+
+    var SongAttributeControls = function (_tempo, _acousticness, _danceability, _energy, _instrumentalness, _happiness) {
+        this.tempo = _tempo;
+        this.acousticness = _acousticness;
+        this.danceability = _danceability;
+        this.energy = _energy;
+        this.instrumentalness = _instrumentalness;
+        this.happiness = _happiness;
+    };
+
+    var initGUI = function () {
+        var gui = new dat.GUI();
+        var seedControlText = new PlaylistSeedControls();
+        var seedMenu = gui.addFolder('Change Playlist Seed Artists/ Genres');
+        seedMenu.add(seedControlText, 'artist');
+        seedMenu.add(seedControlText, 'genre', ['rock', 'roll']);
+        var songAttributeText = new SongAttributeControls(50, 60, 70, 80, 90, 100);
+        var songAttributesMenu = gui.addFolder('Song Attributes');
+        songAttributesMenu.add(songAttributeText, 'tempo', 0, 200);
+        songAttributesMenu.add(songAttributeText, 'acousticness', 0, 100);
+        songAttributesMenu.add(songAttributeText, 'danceability', 0, 100);
+        songAttributesMenu.add(songAttributeText, 'instrumentalness', 0, 100);
+        songAttributesMenu.add(songAttributeText, 'happiness', 0, 100);
+        songAttributesMenu.open();
+    };
+    initGUI();
+
 };
 
 
@@ -221,7 +255,9 @@ var moveForward = function() {
 
     future_z -= BLOCK_LENGTH
 
+    camera.rotation.x += 0.25;
     camera.translateZ(-BLOCK_LENGTH);
+    camera.rotation.x -= 0.25;
 
     // Play the song when we get to a z position multiple of 10.
     if (camera.position.z % 10 == 0) {
@@ -241,7 +277,10 @@ var moveForward = function() {
 
 var moveBackward = function () {
     // move camera backward
+    camera.rotation.x += 0.25;
     camera.translateZ(BLOCK_LENGTH);
+    camera.rotation.x -= 0.25;
+
     // playSong();
     render();
 };
