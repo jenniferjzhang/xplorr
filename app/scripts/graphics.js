@@ -4,6 +4,9 @@ var HEIGHT = window.innerHeight;
 var camera = new THREE.PerspectiveCamera( 75, WIDTH/HEIGHT, 0.1, 1000 );
 var renderer = new THREE.WebGLRenderer({antialias:true});
 var loader = new THREE.TextureLoader;
+var gui = null;
+var songAttributeText;
+
 loader.crossOrigin = '';
 renderer.setSize( WIDTH, HEIGHT );
 var future_z = -100
@@ -16,6 +19,8 @@ var RIGHT = 39;
 
 var songs = []
 var songs_info = {}
+
+
 
 // glow effect from http://stemkoski.github.io/Three.js/Shader-Glow.html
 var GLOW_MATERIAL = new THREE.ShaderMaterial( 
@@ -165,7 +170,6 @@ function playSong() {
 
 
 var initScene = function (data) {
-
     scene.add(new THREE.AmbientLight(0x333333));
 
     var light = new THREE.DirectionalLight(0xffffff, 1);
@@ -183,52 +187,54 @@ var initScene = function (data) {
     for (i = 0; i > future_z; i-= BLOCK_LENGTH) {
         addCube(-5, 0, i, 'left');
     }
-
-
-
-    var SongAttributeControls = function (_tempo, _acousticness, _danceability, _energy, _instrumentalness, _happiness) {
-        this.tempo = _tempo;
-        this.acousticness = _acousticness;
-        this.danceability = _danceability;
-        this.energy = _energy;
-        this.instrumentalness = _instrumentalness;
-        this.happiness = _happiness;
-    };
-
-    var CurrentSongAttributes = function() {
-        this.getCurrentSongAttributes = function() {
-            return ;
-        };
-    };
-
-    window.onload = function() {
-        var text = new FizzyText();
-        var gui = new dat.GUI();
-        gui.add(text, 'message');
-        gui.add(text, 'speed', -5, 5);
-        gui.add(text, 'displayOutline');
-        gui.add(text, 'explode');
-    };
-
-
-    var initGUI = function (data) {
-        console.log(data);
-        var gui = new dat.GUI();
-        var text = new CurrentSongAttributes();
-        gui.add(text, 'getCurrentSongAttributes');
-        var songAttributeText = new SongAttributeControls(data.tempo, data.acousticness, data.danceability, 80, data.instrumentalness, data.valence);
-        var songAttributesMenu = gui.addFolder('Adjust Desired Song Attributes');
-        var tempoController = songAttributesMenu.add(songAttributeText, 'tempo', 0, 200);
-        var acousticnessController = songAttributesMenu.add(songAttributeText, 'acousticness', 0, 1);
-        var danceabilityController = songAttributesMenu.add(songAttributeText, 'danceability', 0, 1);
-        var instrumentalnessController = songAttributesMenu.add(songAttributeText, 'instrumentalness', 0, 1);
-        var happinessController = songAttributesMenu.add(songAttributeText, 'happiness', 0, 1);
-        songAttributesMenu.open();
-    };
-    initGUI(data);
-
 };
 
+var SongAttributeControls = function (_tempo, _acousticness, _danceability, _energy, _happiness) {
+    this.tempo = _tempo;
+    this.acousticness = _acousticness;
+    this.danceability = _danceability;
+    this.energy = _energy;
+    this.happiness = _happiness;
+};
+
+
+var initGUI = function () {
+    gui = new dat.GUI();
+    songAttributeText = new SongAttributeControls(
+        currentSong.features.tempo, 
+        currentSong.features.acousticness*100, 
+        currentSong.features.danceability*100, 
+        currentSong.features.energy*100, 
+        currentSong.features.valence*100);
+    var songAttributesMenu = gui.addFolder('Song Attributes');
+    songAttributesMenu.add(songAttributeText, 'tempo', 0, 200).listen();
+    songAttributesMenu.add(songAttributeText, 'acousticness', 0, 100).listen();
+    songAttributesMenu.add(songAttributeText, 'danceability', 0, 100).listen();
+    songAttributesMenu.add(songAttributeText, 'energy', 0, 100).listen();    
+    songAttributesMenu.add(songAttributeText, 'happiness', 0, 100).listen();
+    songAttributesMenu.open();
+    gui.add(updateCurrentSongAndExplore, 'get current song features');
+};
+
+var updateCurrentSongAndExplore = {'get current song features': function() {
+    var z = Math.floor(camera.position.z / 10) * 10;
+    var near_song_pos = z;
+    if (camera.position.z % 10 == 0) {
+        near_song_pos = z - 10;
+    }
+
+    if (songs_info[near_song_pos] && songs_info[near_song_pos][0]) {
+        exploreSong(songs_info[near_song_pos][0]);
+    }
+}};
+
+var updateGUI = function() {
+    songAttributeText.tempo = currentSong.features.tempo;
+    songAttributeText.acousticness = currentSong.features.acousticness*100;
+    songAttributeText.danceability = currentSong.features.danceability*100;
+    songAttributeText.energy = currentSong.features.energy*100;
+    songAttributeText.happiness = currentSong.features.valence*100;
+}
 
 $(document).keydown(function(e) {
     switch(e.which) {
