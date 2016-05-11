@@ -216,13 +216,13 @@ var initScene = function (data) {
         var gui = new dat.GUI();
         var text = new CurrentSongAttributes();
         gui.add(text, 'getCurrentSongAttributes');
-        var songAttributeText = new SongAttributeControls(50, 60, 70, 80, 90, 100);
+        var songAttributeText = new SongAttributeControls(data.tempo, data.acousticness, data.danceability, 80, data.instrumentalness, data.valence);
         var songAttributesMenu = gui.addFolder('Adjust Desired Song Attributes');
         var tempoController = songAttributesMenu.add(songAttributeText, 'tempo', 0, 200);
-        var acousticnessController = songAttributesMenu.add(songAttributeText, 'acousticness', 0, 100);
-        var danceabilityController = songAttributesMenu.add(songAttributeText, 'danceability', 0, 100);
-        var instrumentalnessController = songAttributesMenu.add(songAttributeText, 'instrumentalness', 0, 100);
-        var happinessController = songAttributesMenu.add(songAttributeText, 'happiness', 0, 100);
+        var acousticnessController = songAttributesMenu.add(songAttributeText, 'acousticness', 0, 1);
+        var danceabilityController = songAttributesMenu.add(songAttributeText, 'danceability', 0, 1);
+        var instrumentalnessController = songAttributesMenu.add(songAttributeText, 'instrumentalness', 0, 1);
+        var happinessController = songAttributesMenu.add(songAttributeText, 'happiness', 0, 1);
         songAttributesMenu.open();
     };
     initGUI(data);
