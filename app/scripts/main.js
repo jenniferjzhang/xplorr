@@ -240,9 +240,10 @@ quizQuestions.push(quizSeeds);
 // After the quiz, we set up the scene
 var setUpExploration = function() {
     $('#finish-quiz').hide();
+
     currentSong.id = songList[songList.length-1].id.split(':')[2];
     spotifyApi.getAudioFeaturesForTrack(currentSong.id, setUpSongFeatures);
-    $('body').append('<button id="save-to-playlist-btn">Save to Playlist</button>');
+    $('body').append('<button id="save-to-playlist-btn">Save Playlist</button>');
     $('#save-to-playlist-btn').on('click', function(e){
       if (sessionPlaylist) {
         replaceTracks();
@@ -505,7 +506,7 @@ var finishSave = function(err, data) {
   if (err) {
     console.log(err);
   } else {
-    window.alert("successfully saved data!");
+    toastr.success('Success!', 'Successfully saved playlist. Please check your Spotify!', {timeOut: 5000})
   }
 }
 

@@ -1,6 +1,6 @@
 body {
-  background: #fafafa;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background-image: url("../images/galaxy_starfield.png");
+  font-family: 'Lato', Helvetica, Arial, sans-serif;
   color: #333;
   padding: 0;
   margin: 0;
@@ -12,7 +12,6 @@ body {
   font-size: 18px;
   font-weight: 200;
   line-height: 30px;
-  background-color: #eee;
   text-align: center;
   border-radius: 6px;
   padding: 60px;
@@ -21,6 +20,7 @@ body {
   font-size: 60px;
   line-height: 1;
   letter-spacing: -1px;
+  color: #ffffff;
 }
 .hero-unit .login-button {
   margin-top: 30px;
@@ -33,7 +33,7 @@ body {
   text-align: center;
   vertical-align: middle;
   cursor: pointer;
-  font-family: Circular, Helvetica, Arial, sans-serif;
+  font-family: 'Lato', Helvetica, Arial, sans-serif;
 }
 .hero-unit .btn:hover {
   background-color: #1ED760;
@@ -55,7 +55,7 @@ body {
 }
 
 .question-container h2 {
-  font-family: Circular, Helvetica, Arial, sans-serif;
+  font-family: 'Lato', Helvetica, Arial, sans-serif;
   margin: 0;
   padding: 50px;
 }
@@ -125,7 +125,7 @@ body {
   margin-bottom: 5px;
   vertical-align: middle;
   cursor: pointer;
-  font-family: Circular, Helvetica, Arial, sans-serif;
+  font-family: 'Lato', Helvetica, Arial, sans-serif;
 }
 .suggestion-group button:hover {
   background-color: #1ED760;
@@ -146,7 +146,7 @@ body {
   text-align: center;
   vertical-align: middle;
   cursor: pointer;
-  font-family: Circular, Helvetica, Arial, sans-serif;
+  font-family: 'Lato', Helvetica, Arial, sans-serif;
 }
 
 .login-btn:hover {
@@ -178,4 +178,18 @@ body {
   background-color: #34495e;
   border-radius: 12px;
   color: white;
+}
+
+#save-to-playlist-btn {
+  border: none;
+  background-color: #2ebd59;
+  color: #ffffff;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  font-size: 20px;
+  border-radius: 400px;
+  padding: 15px 50px 15px;
+  text-transform: uppercase;
+
 }
