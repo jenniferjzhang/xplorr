@@ -92,7 +92,11 @@ var processQuiz = function(err, data) {
 
   for (var i = 0; i < data.tracks.length; i++) {
     var newsong = data.tracks[i];
-    addSongGraphic(newsong.id, newsong.album.images[1].url, newsong.preview_url);
+    var artists = [];
+    for (var j = 0; j < newsong.artists.length; j++) {
+      artists.push(newsong.artists[j].name);
+    }
+    addSongGraphic(newsong.id, newsong.album.images[1].url, newsong.preview_url, newsong.name, artists.join(', '));
   }
 
 
@@ -285,7 +289,7 @@ var addNewSongsToList = function(err, data) {
       //   +'<button class="explore-btn" onclick="exploreSong(\''+newsong.id+'\')">Explore This Song</button>'
       //   +'</div>');
 
-      addSongGraphic(newsong.song_id, newsong.album.images[1].url, newsong.preview_url);
+      addSongGraphic(newsong.song_id, newsong.album.images[1].url, newsong.preview_url, newsong.name, artists.join(', '));
       render();
     }
   }

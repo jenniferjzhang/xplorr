@@ -49,7 +49,7 @@ function addCube(x, y, z, side) {
 
 };
 
-function addSongGraphic(song_id, album_art_url, preview_url) {
+function addSongGraphic(song_id, album_art_url, preview_url, song_name, song_artist) {
     var geometry = new THREE.BoxGeometry( 2, 2, BLOCK_LENGTH );
     var material = new THREE.MeshBasicMaterial( { map: loader.load(album_art_url)} );
     material.map.minFilter = THREE.LinearFilter;
@@ -74,6 +74,29 @@ function addSongGraphic(song_id, album_art_url, preview_url) {
     songs_info[cube.position.z] = [song_id, preview_url, cube, null];
 
     console.log("adding song art at ", cube.position.z)
+
+    // create a canvas element
+    var canvas1 = document.createElement('canvas');
+    canvas1.width = 256;
+    canvas1.height = 128;
+    var context1 = canvas1.getContext('2d');
+    context1.font = "Bold 10px Arial";
+    context1.fillStyle = "rgba(255,255,255,0.95)";
+    context1.fillText(song_name + ' by ' + song_artist, 0, 12);
+    
+    // canvas contents will be used for a texture
+    var texture1 = new THREE.Texture(canvas1) 
+    texture1.needsUpdate = true;
+      
+    var material1 = new THREE.MeshBasicMaterial( {map: texture1} );
+    material1.transparent = true;
+
+    var mesh1 = new THREE.Mesh(
+        geometry, material1
+      );
+    mesh1.position.set(0,cube.position.y+0.2,cube.position.z);
+    scene.add( mesh1 );
+    console.log("mesh at", mesh1.position, mesh1)
 }
 
 
