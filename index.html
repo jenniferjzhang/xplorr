@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Playlist Explorer">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>xplorr</title>
+
+    <!--bootstrap-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+    <link href="/bower_components/toastr/toastr.css" rel="stylesheet"/>
+
+    <!-- our css-->
+    <link rel="stylesheet" href="styles/main.css">
+
+</head>
+<body>
+    <div class="hero-unit" id="login-container">
+      <h1>xplorr</h1>
+    </div>
+
+<!--     <div id="song-features">
+      <h1>Current Song</h1>
+      <h3 id="track"></h3><button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">preview</button>
+      <h4><span id="artist"></span> on <span id="album"></span></h4>
+      <ul>
+        <li><label>Tempo: </label><span id="tempo"></span><button onclick="increaseTrait(0)">+</button><button onclick="resetTrait(0)">0</button><button onclick="decreaseTrait(0)">-</button></li>
+        <li><label>Acousticness: </label><span id="acousticness"></span><button onclick="increaseTrait(1)">+</button><button onclick="resetTrait(1)">0</button><button onclick="decreaseTrait(1)">-</button></li>
+        <li><label>Danceability: </label><span id="danceability"></span><button onclick="increaseTrait(2)">+</button><button onclick="resetTrait(2)">0</button><button onclick="decreaseTrait(2)">-</button></li>
+        <li><label>Energy: </label><span id="energy"></span><button onclick="increaseTrait(3)">+</button><button onclick="resetTrait(3)">0</button><button onclick="decreaseTrait(3)">-</button></li>
+        <li><label>Happiness: </label><span id="happiness"></span><button onclick="increaseTrait(4)">+</button><button onclick="resetTrait(4)">0</button><button onclick="decreaseTrait(4)">-</button></li>
+      </ul>
+      <button class="btn login-btn" id="song-generation-btn">GET MORE SONGS!</button>
+    </div>
+
+    <!-- modal for current song preview--> 
+<!--     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <iframe id="current-song-iframe"></iframe>
+        </div>
+      </div>
+    </div>
+
+    <div id="chart-container" style="width: 400px; height:400px;">
+      <canvas id="myChart" width="400" height="400"></canvas>
+    </div> -->
+
+    <div id="song-suggestions">
+      
+<!-- ---------------- Custom Shader Code ------------------------ -->
+<script id="vertexShader" type="x-shader/x-vertex">
+uniform vec3 viewVector;
+uniform float c;
+uniform float p;
+varying float intensity;
+void main() 
+{
+    vec3 vNormal = normalize( normalMatrix * normal );
+  vec3 vNormel = normalize( normalMatrix * viewVector );
+  intensity = pow( c - dot(vNormal, vNormel), p );
+  
+    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+}
+</script>
+
+<!-- fragment shader a.k.a. pixel shader -->
+<script id="fragmentShader" type="x-shader/x-vertex"> 
+uniform vec3 glowColor;
+varying float intensity;
+void main() 
+{
+  vec3 glow = glowColor * intensity;
+    gl_FragColor = vec4( glow, 1.0 );
+}
+</script>
+<!-- ----------------------------------------------------------- -->
+    </div>
+
+
+
+
+    <!-- bower:js -->
+    <script src="/bower_components/jquery/dist/jquery.js"></script>
+    <script src="/bower_components/spotify-web-api-js/src/spotify-web-api.js"></script>
+    <script src="/bower_components/oauth-js/dist/oauth.min.js"></script>
+    <script src="/bower_components/three.js/three.min.js"></script>
+    <script src="/bower_components/Chart.js/dist/Chart.js"></script>
+    <script src="/bower_components/tween.js/src/Tween.js"></script>
+    <script src="/bower_components/toastr/toastr.js"></script>
+    <!-- endbower -->
+    <script src="scripts/dat.gui.min.js"></script>
+
+
+    <!--our js-->
+    <script src="scripts/main.js"></script>
+    <script src="scripts/graphics.js"></script>
+
+
+
+</body>
+</html>
