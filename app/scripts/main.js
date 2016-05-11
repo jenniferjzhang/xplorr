@@ -12,7 +12,6 @@ var quizProgress = -1;
 var quizQuestions = [];
 var quizResults = {limit: 5};
 var QUESTION_CONTAINER = 'question-container';
-var QUIZ_COLORS = ['#1abc9c', '#c0392b', '#2ecc71', '#9b59b6', '#34495e'];
 
 // The quiz doesn't do anything right now
 // TODO[tricia]: actually implement the quiz.
@@ -71,16 +70,6 @@ var nextQuizQuestion = function() {
   }
 }
 
-var setColors = function() {
-  var color = QUIZ_COLORS[quizProgress % QUIZ_COLORS.length];
-  $('.'+QUESTION_CONTAINER + ' h2').css('backgroundColor', color);
-  $('.'+QUESTION_CONTAINER + ' .main div').css('backgroundColor', color);
-  $elements = $('.'+QUESTION_CONTAINER + ' .main div');
-  for (var i = 0; i < $elements.length; i++) {
-    $($elements[i]).css('opacity', 0.15*(($elements.length-i)%6)+0.2);
-  }
-}
-
 var finishQuiz = function() {
   spotifyApi.getRecommendations(quizResults, processQuiz);
   initializeGraphics();
@@ -124,8 +113,6 @@ var quizValence = function() {
     quizResults.target_valence = $(e.target).attr('data-value');
     nextQuizQuestion();
   });
-
-  setColors();
 }
 
 var quizDanceability = function() {
@@ -144,8 +131,6 @@ var quizDanceability = function() {
     quizResults.target_danceability = $(e.target).attr('data-value');
     nextQuizQuestion();
   });
-
-  setColors();
 }
 
 var quizAcousticness = function() {
@@ -164,8 +149,6 @@ var quizAcousticness = function() {
     quizResults.target_acousticness = $(e.target).attr('data-value');
     nextQuizQuestion();
   });
-
-  setColors();
 }
 
 var quizSeeds = function() {
@@ -181,54 +164,13 @@ var finishSeeds = function(err, data) {
   });
   var questionClass1 = 'genre-quiz-answer';
   $('body').append(makeQuizHtml(questionText1, questionList1, questionClass1, 
-      'genre-seed',
-      '<button class="btn" id="to-artist-seed">explore artists instead</button>'));
+      'genre-seed'));
   $('.'+questionClass1).on('click', function(e) {
     e.preventDefault();
     quizResults.seed_genres = [$(e.target).attr('data-value')];
     nextQuizQuestion();
   });
-
-  // artists
-  var questionText2 = "choose artists to explore";
-  var inputLabel2 = "spotify artist uri";
-  var numArtists = 5;
-  var questionClass2 = "artist-quiz-answer";
-  $('body').append(makeQuizInput(questionText2, inputLabel2, numArtists, questionClass2,
-      'artist-seed',
-      '<button class="btn" id="to-genre-seed">explore genres instead</button>'));
-  $('button.'+questionClass2).on('click', function(e) {
-    e.preventDefault();
-    quizResults.seed_artists = [];
-    $.each($('input.'+questionClass2), function(){
-      // TODO: better sanitization
-      if (this.value && this.value != '') {
-        quizResults.seed_artists.push(this.value.split(':')[2]);
-      }
-    });
-
-    // TODO: better error message
-    if (quizResults.seed_artists.length > 0) {
-      nextQuizQuestion();
-    } else {
-      window.alert("you need at least one artist!");
-    }
-  });
-
-  $('#to-artist-seed').on('click', function(e) {
-    $('#artist-seed').show();
-    $('#genre-seed').hide();
-  });
-
-  $('#to-genre-seed').on('click', function(e) {
-    $('#genre-seed').show();
-    $('#artist-seed').hide();
-  });
-
-  $('#artist-seed').hide();
-  setColors();
-
-  $('.' + QUESTION_CONTAINER + ' .main').css('max-height', 'calc(100vh - 200px)');  
+  $('.' + QUESTION_CONTAINER + ' .main').css('max-height', 'calc(100vh - 133px)');  
   $('.' + QUESTION_CONTAINER + ' .main').css('overflow-y', 'auto');
 }
 

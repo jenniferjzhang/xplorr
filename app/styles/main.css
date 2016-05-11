@@ -58,6 +58,27 @@ body {
   font-family: 'Lato', Helvetica, Arial, sans-serif;
   margin: 0;
   padding: 50px;
+  font-weight: bolder;
+}
+
+.question-container .quiz-answer:nth-child(5n+1) {
+  background-color: rgba(26, 188, 156, 0.3);
+}
+
+.question-container .quiz-answer:nth-child(5n+2) {
+  background-color: rgba(46, 204, 113, 0.3);
+}
+
+.question-container .quiz-answer:nth-child(5n+3) {
+  background-color: rgba(41, 128, 185, 0.3);
+}
+
+.question-container .quiz-answer:nth-child(5n+4) {
+  background-color: rgba(22, 160, 133, 0.3);
+}
+
+.question-container .quiz-answer:nth-child(5n+5) {
+  background-color: rgba(39, 174, 96, 0.3);
 }
 
 .question-container .quiz-answer {
@@ -67,7 +88,8 @@ body {
 
 .question-container .quiz-answer:hover {
   cursor: pointer;
-  color: #95a5a6;
+  background-color: rgba(236, 240, 241, 0.3);
+  font-weight: bold;
 }
 
 #to-artist-seed, #to-genre-seed, button.artist-quiz-answer {
