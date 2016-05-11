@@ -152,10 +152,17 @@ var moveForward = function() {
 
     camera.translateZ(-BLOCK_LENGTH);
 
+    // Play the song when we get to a z position multiple of 10.
     if (camera.position.z % 10 == 0) {
         console.log("try playing song");
         playSong();
 
+    }
+
+    // Check if we need to generate more songs.
+    if (camera.position.z == songs[songs.length - 2]) {
+        console.log("generate more songs...");
+        generateSongRecommendations();
     }
     render();
 
@@ -216,7 +223,9 @@ var swipeRight = function() {
         scene.add(glowingCube);
         render();
         songs_info[near_song_pos][3] = true;
+
     }
+
 }
 
 var animate = function() {
