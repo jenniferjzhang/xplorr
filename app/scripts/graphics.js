@@ -101,10 +101,12 @@ function addSongGraphic(song_id, album_art_url, preview_url, song_name, song_art
     // Update lists
     songs.push(cube.position.z);
     // id, preview url, cube object, whether it is in final playlist
-    songs_info[cube.position.z] = [song_id, preview_url, cube, null];
 
     console.log("adding song art at ", cube.position.z)
 
+    // based on these demos
+    // https://stemkoski.github.io/Three.js/Sprite-Text-Labels.html
+    // https://stemkoski.github.io/Three.js/Texture-From-Canvas.html
     // create a canvas element
     var canvas1 = document.createElement('canvas');
     canvas1.width = 256;
@@ -126,7 +128,10 @@ function addSongGraphic(song_id, album_art_url, preview_url, song_name, song_art
       );
     mesh1.position.set(0,cube.position.y+0.2,cube.position.z);
     scene.add( mesh1 );
-    console.log("mesh at", mesh1.position, mesh1)
+
+    // store for later use
+    songs_info[cube.position.z] = [song_id, preview_url, cube, null, mesh1];
+
 }
 
 
@@ -249,10 +254,14 @@ var swipeLeft = function() {
     }
     console.log("camera", camera.position.z, "left near song position ", near_song_pos);
 
-    if (songs_info[near_song_pos] && songs_info[near_song_pos][2] && songs_info[near_song_pos][3] != false) {
+    if (songs_info[near_song_pos] && songs_info[near_song_pos][2] && songs_info[near_song_pos][3] == null) {
         var cube = songs_info[near_song_pos][2];
         cube.material.transparent = true;
+        var text = songs_info[near_song_pos][4];
+        text.material.transparent = true;
         new TWEEN.Tween(cube.material).to({opacity: 0}, 500).start();
+        new TWEEN.Tween(text.material).to({opacity: 0}, 500).start();
+
         songs_info[near_song_pos][3] = false;
 
         // Get rid of the preview URL
@@ -275,7 +284,7 @@ var swipeRight = function() {
     }
     console.log("camera", camera.position.z, "right near song position ", near_song_pos);
 
-    if (songs_info[near_song_pos] && songs_info[near_song_pos][2] && songs_info[near_song_pos][3] != false) {
+    if (songs_info[near_song_pos] && songs_info[near_song_pos][2] && songs_info[near_song_pos][3] == null) {
         console.log("swipe right on song", songs_info[near_song_pos][0]);
         var cube = songs_info[near_song_pos][2];
         console.log("add glow at ", cube.position.z);
@@ -285,7 +294,7 @@ var swipeRight = function() {
         glowingCube.position.x = cube.position.x;
         glowingCube.position.y = cube.position.y;
         glowingCube.position.z = cube.position.z;
-        glowingCube.scale.multiplyScalar(1.05);
+        glowingCube.scale.multiplyScalar(1.2);
         scene.add(glowingCube);
         render();
         songs_info[near_song_pos][3] = true;
