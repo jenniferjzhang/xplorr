@@ -37,7 +37,7 @@ var makeQuizHtml = function(questionText, questionList, questionClass, id, extra
   text += extra;
   text += '</div>'; //end question-container
   return text;
-}
+};
 
 var makeQuizInput = function(questionText, inputLabel, numLabels, questionClass, id, extra) {
   id = id || '';
@@ -54,7 +54,7 @@ var makeQuizInput = function(questionText, inputLabel, numLabels, questionClass,
   text += extra;
   text += '</div>'; //end question-container
   return text;
-}
+};
 
 var nextQuizQuestion = function() {
   quizProgress += 1;
@@ -68,7 +68,7 @@ var nextQuizQuestion = function() {
   else {
     finishQuiz(); 
   }
-}
+};
 
 var setColors = function() {
   var color = QUIZ_COLORS[quizProgress % QUIZ_COLORS.length];
@@ -78,13 +78,13 @@ var setColors = function() {
   for (var i = 0; i < $elements.length; i++) {
     $($elements[i]).css('opacity', 0.15*(($elements.length-i)%6)+0.2);
   }
-}
+};
 
 var finishQuiz = function() {
   spotifyApi.getRecommendations(quizResults, processQuiz);
   initializeGraphics();
 
-}
+};
 
 var processQuiz = function(err, data) {
   songList = data.tracks;
@@ -99,7 +99,7 @@ var processQuiz = function(err, data) {
     this.id = 'spotify:track:'+this.id;
   });
   setUpExploration();
-}
+};
 
 var quizValence = function() {
   var questionText = "How are you feeling?";
@@ -119,7 +119,7 @@ var quizValence = function() {
   });
 
   setColors();
-}
+};
 
 var quizDanceability = function() {
   var questionText = "Do you want to dance?";
@@ -139,7 +139,7 @@ var quizDanceability = function() {
   });
 
   setColors();
-}
+};
 
 var quizAcousticness = function() {
   var questionText = "Do you want to sing along?";
@@ -159,12 +159,12 @@ var quizAcousticness = function() {
   });
 
   setColors();
-}
+};
 
 var quizSeeds = function() {
   // genres
   spotifyApi.getAvailableGenreSeeds(finishSeeds);
-}
+};
 
 var finishSeeds = function(err, data) {
   // genres
@@ -223,7 +223,7 @@ var finishSeeds = function(err, data) {
 
   $('.' + QUESTION_CONTAINER + ' .main').css('max-height', 'calc(100vh - 200px)');  
   $('.' + QUESTION_CONTAINER + ' .main').css('overflow-y', 'auto');
-}
+};
 
 quizQuestions.push(quizValence);
 quizQuestions.push(quizDanceability);
@@ -243,7 +243,7 @@ var setUpExploration = function() {
         spotifyApi.createPlaylist(sessionUser.id, {name: 'Playlist Explorer'}, playlistCall);
       }   
     });
-}
+};
 
 // this just updates the fields visually
 // [TODO]: make this do cool things
@@ -281,7 +281,7 @@ var addNewSongsToList = function(err, data) {
       render();
     }
   }
-}
+};
 
 // saves the song features, then grabs song info
 // song features are things like danceability, valence (happiness), etc.
@@ -291,7 +291,7 @@ var setUpSongFeatures = function(err, data) {
   }
 
   spotifyApi.getTrack(currentSong.id, setUpSongInfo);
-}
+};
 
 // gets the current song's features, then look for song info
 var updateSongFeatures = function(err, data) {
@@ -300,7 +300,7 @@ var updateSongFeatures = function(err, data) {
   }
 
   spotifyApi.getTrack(currentSong.id, updateSongInfo);
-}
+};
 
 // saves song info then calls to update visuals
 // song info is like album, artist, etc.
@@ -310,7 +310,7 @@ var setUpSongInfo = function(err, data) {
   }
 
   setUpGraph();
-}
+};
 
 // gets the song info, the look to update text and graph visuals
 var updateSongInfo = function(err, data) {
@@ -321,7 +321,7 @@ var updateSongInfo = function(err, data) {
   currentSong.info = data;
 
   updateVisualInfo();
-}
+};
 
 
 // initiailizes the web graph using chart.js
@@ -348,7 +348,7 @@ var setUpGraph = function() {
           currentSong.features.valence*100]
       },
     ]
-  }
+  };
   myRadarChart = new Chart(ctx, {
     type: 'radar',
     data: radarData//,
@@ -356,7 +356,7 @@ var setUpGraph = function() {
   }); 
 
   updateVisualInfo();
-}
+};
 
 var updateVisualInfo = function() {
 
@@ -365,7 +365,7 @@ var updateVisualInfo = function() {
   var artists = [];
   for (var i =0 ; i < currentSong.info.artists.length; i++) {
     artists.push(currentSong.info.artists[i].name);
-  };
+  }
   $('#song-features #artist').text(artists.join(", "));
   $('#song-features #album').text(currentSong.info.album.name);
   
@@ -404,7 +404,7 @@ var updateVisualInfo = function() {
     pointHoverBackgroundColor: "#fff",
     pointHoverBorderColor: colorString,
     data: newData
-  }
+  };
   radarData.datasets.push(newDataset);
 
   radarData.datasets[0].data = newData2;
@@ -415,26 +415,26 @@ var updateVisualInfo = function() {
   for (var i = 0; i < traits.length; i++) {
     updateTextClass(i);
   }       
-}
+};
 
 // these all change the desired traits and update the graph
 var increaseTrait = function(traitIndex) {
   radarData.datasets[datasetIndex].data[traitIndex] += 5;  
   myRadarChart.update(true);
   updateTextClass(traitIndex);
-}
+};
 
 var decreaseTrait = function(traitIndex) {
   radarData.datasets[datasetIndex].data[traitIndex] = Math.max(0, radarData.datasets[datasetIndex].data[traitIndex]-5) ;
   myRadarChart.update(true);
   updateTextClass(traitIndex);
-}
+};
 
 var resetTrait = function(traitIndex) {
   radarData.datasets[datasetIndex].data[traitIndex] = radarData.datasets[0].data[traitIndex];
   myRadarChart.update(true);
   updateTextClass(traitIndex);
-}
+};
 
 // makes the text green or red, based on comparison to baseline
 var updateTextClass = function(traitIndex) {
@@ -452,19 +452,19 @@ var updateTextClass = function(traitIndex) {
   }
 
   $element.text(a);
-}
+};
 
 // this makes an ugly iframe that has the song url in it
 // [TODO:]: fix bug where this makes all matching songs play the preview
 var makeiframe = function(url, id) {
   $('.song-suggestions').append('<iframe src="'+url+'"></iframe>');
-}
+};
 
 // this just adds it to our local representation of the playlist
 // doesn't actually add it to the spotify playlist
 var addToPlaylist = function(id) {
   songList.push({id: 'spotify:track:' + id});
-}
+};
 
 // this looks up the new song
 // [TODO:] add callback and hook up to graphics,
@@ -473,14 +473,14 @@ var exploreSong = function(id) {
   $('.suggestion.'+id).addClass('explored');
   currentSong.id = id;
   spotifyApi.getAudioFeaturesForTrack(currentSong.id, updateSongFeatures);
-}
+};
 
 var playlistCall = function(err, data) {
   if (data) {
     sessionPlaylist = data;
     replaceTracks();
   }
-}
+};
 
 var replaceTracks = function() {
   songuris = [];
@@ -490,7 +490,7 @@ var replaceTracks = function() {
     }
   }
   spotifyApi.replaceTracksInPlaylist(sessionUser.id, sessionPlaylist.id, songuris, finishSave);
-}
+};
 
 var finishSave = function(err, data) {
   if (err) {
@@ -498,15 +498,14 @@ var finishSave = function(err, data) {
   } else {
     window.alert("successfully saved data!");
   }
-}
+};
 
 
 var initializeGraphics = function() {
 
-  renderer.setSize( WIDTH, HEIGHT );
-  $('#song-suggestions').append( renderer.domElement );
 
-  initScene();
+  init();
+
   render();
 
 }
@@ -524,7 +523,7 @@ var generateSongRecommendations = function() {
     }
 
     spotifyApi.getRecommendations(rec_data, addNewSongsToList);
-}
+};
 
 $(document).on('ready', function(){
 
@@ -567,11 +566,11 @@ $(document).on('ready', function(){
   // modal stuff for the current song preview button
   $('#myModal').on('show.bs.modal', function(e) {
     $('#current-song-iframe').attr('src', currentSong.info.preview_url);
-  })
+  });
 
   $('#myModal').on('hide.bs.modal', function(e) {
     $('#current-song-iframe').attr('src', '');
-  })
+  });
 
   $('#song-features ul button').addClass('btn btn-sm btn-primary'); 
 });
