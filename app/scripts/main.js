@@ -72,7 +72,6 @@ var nextQuizQuestion = function() {
 
 var finishQuiz = function() {
   spotifyApi.getRecommendations(quizResults, processQuiz);
-  initializeGraphics();
 
 }
 
@@ -239,11 +238,15 @@ var addNewSongsToList = function(err, data) {
 // song features are things like danceability, valence (happiness), etc.
 var setUpSongFeatures = function(err, data) {
   if (data) {
+
+    initializeGraphics(data);
+
     currentSong.features = data;
   }
 
+
   spotifyApi.getTrack(currentSong.id, setUpSongInfo);
-}
+};
 
 // gets the current song's features, then look for song info
 var updateSongFeatures = function(err, data) {
@@ -261,7 +264,17 @@ var setUpSongInfo = function(err, data) {
     currentSong.info = data;
   }
 
-  setUpGraph();
+  console.log(data);
+
+  // data: [currentSong.features.tempo,
+  //   currentSong.features.acousticness*100,
+  //   currentSong.features.danceability*100,
+  //   currentSong.features.energy*100,
+  //   currentSong.features.valence*100]
+
+
+
+  // setUpGraph();
 }
 
 // gets the song info, the look to update text and graph visuals
@@ -405,15 +418,11 @@ var finishSave = function(err, data) {
 }
 
 
-var initializeGraphics = function() {
-
-  renderer.setSize( WIDTH, HEIGHT );
-  $('#song-suggestions').append( renderer.domElement );
-
-  initScene();
+var initializeGraphics = function(data) {
+  initScene(data);
   render();
 
-}
+};
 
 var generateSongRecommendations = function() {
     var NUM_SONG_REQS = 5;

@@ -164,7 +164,7 @@ function playSong() {
 }
 
 
-var initScene = function () {
+var initScene = function (data) {
 
     scene.add(new THREE.AmbientLight(0x333333));
 
@@ -185,10 +185,6 @@ var initScene = function () {
     }
 
 
-    var PlaylistSeedControls = function () {
-            this.artist = 'Search for an artist';
-            this.genre = 0.8;
-        };
 
     var SongAttributeControls = function (_tempo, _acousticness, _danceability, _energy, _instrumentalness, _happiness) {
         this.tempo = _tempo;
@@ -199,22 +195,37 @@ var initScene = function () {
         this.happiness = _happiness;
     };
 
-    var initGUI = function () {
+    var CurrentSongAttributes = function() {
+        this.getCurrentSongAttributes = function() {
+            return ;
+        };
+    };
+
+    window.onload = function() {
+        var text = new FizzyText();
         var gui = new dat.GUI();
-        var seedControlText = new PlaylistSeedControls();
-        var seedMenu = gui.addFolder('Change Playlist Seed Artists/ Genres');
-        seedMenu.add(seedControlText, 'artist');
-        seedMenu.add(seedControlText, 'genre', ['rock', 'roll']);
+        gui.add(text, 'message');
+        gui.add(text, 'speed', -5, 5);
+        gui.add(text, 'displayOutline');
+        gui.add(text, 'explode');
+    };
+
+
+    var initGUI = function (data) {
+        console.log(data);
+        var gui = new dat.GUI();
+        var text = new CurrentSongAttributes();
+        gui.add(text, 'getCurrentSongAttributes');
         var songAttributeText = new SongAttributeControls(50, 60, 70, 80, 90, 100);
-        var songAttributesMenu = gui.addFolder('Song Attributes');
-        songAttributesMenu.add(songAttributeText, 'tempo', 0, 200);
-        songAttributesMenu.add(songAttributeText, 'acousticness', 0, 100);
-        songAttributesMenu.add(songAttributeText, 'danceability', 0, 100);
-        songAttributesMenu.add(songAttributeText, 'instrumentalness', 0, 100);
-        songAttributesMenu.add(songAttributeText, 'happiness', 0, 100);
+        var songAttributesMenu = gui.addFolder('Adjust Desired Song Attributes');
+        var tempoController = songAttributesMenu.add(songAttributeText, 'tempo', 0, 200);
+        var acousticnessController = songAttributesMenu.add(songAttributeText, 'acousticness', 0, 100);
+        var danceabilityController = songAttributesMenu.add(songAttributeText, 'danceability', 0, 100);
+        var instrumentalnessController = songAttributesMenu.add(songAttributeText, 'instrumentalness', 0, 100);
+        var happinessController = songAttributesMenu.add(songAttributeText, 'happiness', 0, 100);
         songAttributesMenu.open();
     };
-    initGUI();
+    initGUI(data);
 
 };
 
