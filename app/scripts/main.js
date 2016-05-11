@@ -522,9 +522,38 @@ var initializeGraphics = function() {
 
 var generateSongRecommendations = function() {
     var NUM_SONG_REQS = 5;
-    var seeds = songList.slice(-5).map(function(obj){
-      return obj.id.split(':')[2];
-    });
+    var NUM_SONG_SEEDS = 5;
+    var seeds = [];
+
+    // first add songs that you accepted
+    for (var i = songList.length-1; i >= 0; i--) {
+      var obj = songList[i];
+      if (songs_info.hasOwnProperty[obj.id] && songs_info[obj.id][3]) {
+        seeds.push(obj.id.split(':')[2]);
+        if (seeds.length >= NUM_SONG_SEEDS) {
+          break;
+        }
+      }
+    }
+
+    if (seeds.length < NUM_SONG_SEEDS) {
+    // then add songs that you didn't reject
+      for (var i = songList.length-1; i >= 0; i--) {
+        var obj = songList[i];
+        if (songs_info.hasOwnProperty[obj.id] && songs_info[obj.id][3] != false) {
+          seeds.push(obj.id.split(':')[2]);
+          if (seeds.length >= NUM_SONG_SEEDS) {
+            break;
+          }
+        }
+      }        
+    }
+
+    // then just add the last song if they were all rejected?
+    if (seeds.length <= 0) {
+      seeds.push(songList[songList.length-1].id.split(':')[2]);
+    }
+
     var rec_data = {seed_tracks: seeds, limit: NUM_SONG_REQS};
     // tempo isn't normalized but everything else is
     rec_data["target_tempo"] = radarData.datasets[datasetIndex].data[0];
